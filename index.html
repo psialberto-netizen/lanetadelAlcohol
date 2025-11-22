@@ -3,154 +3,1613 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Neta del Alcohol - Guía Interactiva (Corregido)</title>
+    <title>La Neta del Alcohol - Guía Interactiva</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Cargamos Mermaid con una versión específica y estable -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&family=Open+Sans:wght@400;600&display=swap');
-        body { font-family: 'Open Sans', sans-serif; background-color: #f8fafc; }
-        h1,h2,h3{ font-family: 'Fredoka', sans-serif; }
-        .mermaid{ background:white; border-radius:10px; padding:10px; overflow-x:auto; max-width:100%; }
-        /* (se mantienen estilos esenciales, truncados aquí por brevedad) */
-        .tab-btn.active{ border-bottom-color:#4f46e5; color:#4f46e5; background:#e0e7ff; }
-        .accordion-content{ transition:max-height .3s,opacity .3s; max-height:0; overflow:hidden; opacity:0; }
-        .accordion-content.active{ max-height:1000px; opacity:1; }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f8fafc;
+            /* Se eliminó user-select: none para permitir seleccionar texto y depurar */
+        }
+
+        h1, h2, h3 {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Marca de Agua Anti-Plagio */
+        .watermark-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+            display: flex;
+            flex-wrap: wrap;
+            overflow: hidden;
+            opacity: 0.06;
+        }
+        
+        .watermark-text {
+            transform: rotate(-45deg);
+            white-space: nowrap;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #000;
+            margin: 4rem;
+        }
+
+        /* Estilos para Pestañas - MEJORADOS PARA MÓVIL */
+        .tab-container {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .tab-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+        
+        .tab-btn {
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            flex-shrink: 0; /* Evita que se encojan demasiado */
+        }
+        .tab-btn.active {
+            border-bottom-color: #4f46e5; /* Indigo-600 */
+            color: #4f46e5;
+            background-color: #e0e7ff;
+        }
+
+        /* Animación para Flip Cards */
+        .flip-card {
+            background-color: transparent;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            flex-direction: column;
+        }
+        .flip-card-front { background-color: #ffffff; color: black; border: 2px solid #e2e8f0; }
+        .flip-card-back { background-color: #4f46e5; color: white; transform: rotateY(180deg); overflow-y: auto; }
+
+        /* Estilo para Acordeones */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            max-height: 1000px; /* Aumentado para contenido largo en móvil */
+            opacity: 1;
+        }
+        .rotate-icon { transition: transform 0.3s ease; }
+        .rotate-icon.active { transform: rotate(180deg); }
+        
+        .accordion-btn {
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        .accordion-btn:hover {
+            transform: scale(1.01);
+            border-color: rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .section-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .alcohol-type-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+
+        /* Animaciones */
+        .pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .8; } }
+
+        /* Diagrama de Flujo - Estilos adicionales para contenedores */
+        .mermaid {
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            overflow-x: auto; /* Scroll horizontal vital para móviles */
+            max-width: 100%;
+        }
+        .timeline-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: #e2e8f0; transform: translateX(-50%); z-index: 0; }
+        .liver-alert { animation: border-pulse 2s infinite; }
+        @keyframes border-pulse { 0% { border-color: #ef4444; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { border-color: #f87171; box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { border-color: #ef4444; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+        /* Checkbox Estilizado para el Detector */
+        .detector-check:checked + div {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+            color: #991b1b;
+        }
+        .detector-check:checked + div i {
+            color: #ef4444;
+        }
+
+        /* Estilos del Semáforo */
+        .traffic-light {
+            background: #333;
+            border-radius: 20px;
+            padding: 10px;
+            display: inline-flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: scale(0.8); /* Un poco más pequeño por defecto para móvil */
+        }
+        @media (min-width: 768px) {
+             .traffic-light { transform: scale(1); padding: 15px; gap: 15px; }
+        }
+        .light {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #555;
+            transition: all 0.5s ease;
+            box-shadow: inset 0 5px 10px rgba(0,0,0,0.5);
+        }
+        @media (min-width: 768px) {
+            .light { width: 60px; height: 60px; }
+        }
+        
+        .light.red.active { background: #ef4444; box-shadow: 0 0 20px #ef4444, inset 0 -5px 10px rgba(0,0,0,0.2); }
+        .light.yellow.active { background: #eab308; box-shadow: 0 0 20px #eab308, inset 0 -5px 10px rgba(0,0,0,0.2); }
+        .light.green.active { background: #22c55e; box-shadow: 0 0 20px #22c55e, inset 0 -5px 10px rgba(0,0,0,0.2); }
+
+        /* Estilos del Escáner Corporal - RESPONSIVO */
+        .body-container {
+            position: relative;
+            width: 260px; /* Más angosto para móviles */
+            height: 520px;
+            margin: 0 auto;
+            background-image: url('https://cdn-icons-png.flaticon.com/512/3003/3003093.png'); /* Silueta genérica */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.9;
+        }
+        @media (min-width: 768px) {
+            .body-container { width: 300px; height: 600px; }
+        }
+
+        .organ-hotspot {
+            position: absolute;
+            width: 35px; /* Ajustado para móvil */
+            height: 35px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.6);
+            transition: all 0.3s ease;
+            animation: pulse-btn 2s infinite;
+            border: 2px solid #ec4899;
+            font-size: 0.9rem;
+        }
+        @media (min-width: 768px) {
+            .organ-hotspot { width: 40px; height: 40px; font-size: 1.1rem; }
+        }
+
+        .organ-hotspot:hover {
+            transform: scale(1.2);
+            background: #ec4899;
+            color: white;
+        }
+        .organ-hotspot.active-organ {
+            background: #ec4899;
+            color: white;
+            transform: scale(1.2);
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.8);
+        }
+        @keyframes pulse-btn {
+            0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(236, 72, 153, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); }
+        }
+        
+        /* Posiciones de los órganos */
+        .pos-brain { top: 5%; left: 43%; }
+        .pos-heart { top: 22%; left: 48%; }
+        .pos-liver { top: 32%; left: 38%; }
+        .pos-stomach { top: 35%; left: 52%; }
+        .pos-sexual { top: 50%; left: 43%; }
+
+        /* Estilos para Burbujas de Chat (Comunicación) */
+        .chat-bubble {
+            position: relative;
+            padding: 12px 16px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            max-width: 90%; /* Más ancho en móvil */
+            font-size: 0.95rem;
+        }
+        @media (min-width: 768px) {
+             .chat-bubble { padding: 15px 20px; max-width: 80%; font-size: 1rem; }
+        }
+
+        .chat-bubble.left {
+            background-color: #e0e7ff; /* Indigo-100 */
+            color: #4338ca; /* Indigo-700 */
+            border-bottom-left-radius: 0;
+            margin-right: auto;
+        }
+        .chat-bubble.right {
+            background-color: #fce7f3; /* Pink-100 */
+            color: #be185d; /* Pink-700 */
+            border-bottom-right-radius: 0;
+            margin-left: auto;
+            text-align: right;
+        }
+        
+        /* Estilos para Tarjetas de Técnicas */
+        .technique-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .technique-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body class="text-gray-800">
 
-<div class="bg-white shadow-md sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-    <div class="flex justify-between h-16 items-center">
-      <div class="flex items-center"><i class="fas fa-glass-cheers text-pink-600 mr-2"></i><span class="font-bold">La Neta del Alcohol</span></div>
-      <div class="flex-1">
-        <div class="flex space-x-2 bg-gray-100 p-1 rounded-lg overflow-x-auto">
-          <button onclick="switchTab('guia')" id="btn-guia" class="tab-btn active px-3 py-2 rounded">Guía</button>
-          <button onclick="switchTab('mujer')" id="btn-mujer" class="tab-btn px-3 py-2 rounded">Mujer</button>
-          <button onclick="switchTab('comunicacion')" id="btn-comunicacion" class="tab-btn px-3 py-2 rounded">Hablar</button>
-          <button onclick="switchTab('emociones')" id="btn-emociones" class="tab-btn px-3 py-2 rounded">Emociones</button>
+    <div id="watermark" class="watermark-container"></div>
+
+    <!-- Navegación Principal (PESTAÑAS) -->
+    <div class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Logo más compacto en móvil -->
+                <div class="flex items-center flex-shrink-0 mr-2">
+                    <i class="fas fa-glass-cheers text-pink-600 text-xl md:text-2xl mr-1 md:mr-3"></i>
+                    <span class="font-bold text-lg md:text-xl tracking-wide text-gray-800 hidden md:block">La Neta del Alcohol</span>
+                </div>
+                
+                <!-- Tab Buttons: Contenedor con scroll horizontal invisible -->
+                <div class="flex-1 overflow-hidden">
+                    <div class="flex space-x-1 md:space-x-2 bg-gray-100 p-1 rounded-lg overflow-x-auto tab-container">
+                        <button onclick="switchTab('guia')" id="btn-guia" class="tab-btn active px-3 py-2 rounded-md font-bold text-gray-600 text-xs md:text-base flex items-center">
+                            <i class="fas fa-book-open mr-1"></i> Guía
+                        </button>
+                        <button onclick="switchTab('mujer')" id="btn-mujer" class="tab-btn px-3 py-2 rounded-md font-bold text-gray-600 text-xs md:text-base flex items-center">
+                            <i class="fas fa-female mr-1"></i> Mujer
+                        </button>
+                        <button onclick="switchTab('comunicacion')" id="btn-comunicacion" class="tab-btn px-3 py-2 rounded-md font-bold text-gray-600 text-xs md:text-base flex items-center">
+                            <i class="fas fa-comments mr-1"></i> Hablar
+                        </button>
+                        <button onclick="switchTab('emociones')" id="btn-emociones" class="tab-btn px-3 py-2 rounded-md font-bold text-gray-600 text-xs md:text-base flex items-center">
+                            <i class="fas fa-smile-beam mr-1"></i> Emociones
+                        </button>
+                        <button onclick="switchTab('cuerpo')" id="btn-cuerpo" class="tab-btn px-3 py-2 rounded-md font-bold text-gray-600 text-xs md:text-base flex items-center">
+                            <i class="fas fa-heartbeat mr-1"></i> Cuerpo
+                        </button>
+                        <button onclick="switchTab('semaforo')" id="btn-semaforo" class="tab-btn px-3 py-2 rounded-md font-bold text-gray-600 text-xs md:text-base flex items-center">
+                            <i class="fas fa-traffic-light mr-1"></i> Niveles
+                        </button>
+                        <button onclick="switchTab('consumo')" id="btn-consumo" class="tab-btn px-3 py-2 rounded-md font-bold text-gray-600 text-xs md:text-base flex items-center">
+                            <i class="fas fa-wine-glass-alt mr-1"></i> Consumo
+                        </button>
+                        <button onclick="switchTab('test')" id="btn-test" class="tab-btn px-3 py-2 rounded-md font-bold text-gray-600 text-xs md:text-base flex items-center">
+                            <i class="fas fa-clipboard-check mr-1"></i> Riesgos
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-</div>
 
-<!-- Tabs -->
-<div id="tab-guia" class="p-6">
-  <h1 class="text-2xl font-bold">¿Qué onda con el alcohol?</h1>
-  <p>Guía interactiva para padres e hijos.</p>
-</div>
+    <!-- ======================= PESTAÑA 1: GUÍA ======================= -->
+    <div id="tab-guia" class="block animate-fade-in">
+        <!-- Hero Section -->
+        <header class="section-gradient text-white py-12">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h1 class="text-3xl md:text-5xl font-bold mb-4">¿Qué onda con el alcohol?</h1>
+                <p class="text-lg md:text-xl mb-6 opacity-90">Guía interactiva para padres e hijos.</p>
+                <div class="bg-white/20 backdrop-blur-md rounded-lg p-4 inline-block text-sm md:text-base">
+                    <p class="font-semibold"><i class="fas fa-info-circle mr-2"></i> Dato OMS:</p>
+                    <p class="italic">"El alcohol es una droga que modifica funciones y genera dependencia."</p>
+                </div>
+            </div>
+        </header>
 
-<div id="tab-mujer" class="hidden p-6 bg-gray-50">
-  <h1 class="text-2xl font-bold text-pink-600">Mujer y Alcohol</h1>
-  <p>Contenido para la pestaña mujer.</p>
-</div>
+        <main class="max-w-6xl mx-auto px-4 py-10 space-y-16">
+            <!-- 1. Tipos y TRAGO ESTÁNDAR -->
+            <section>
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-indigo-700 mb-2">1. ¿Qué estás tomando?</h2>
+                    <p class="text-gray-600">Fermentado o destilado, el alcohol es el mismo. ¿Sabes cuánto tomas?</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="alcohol-type-card bg-white rounded-2xl p-6 border-t-8 border-yellow-400 shadow-md relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-yellow-100 text-yellow-800 px-3 py-1 rounded-bl-lg text-sm font-bold">12% - 14% Alc.</div>
+                        <h3 class="text-xl font-bold mb-2"><i class="fas fa-beer text-yellow-600 mr-2"></i> Fermentados</h3>
+                        <p class="text-sm text-gray-600">Cerveza y vino. Obtenidos por fermentación de azúcares.</p>
+                    </div>
+                    <div class="alcohol-type-card bg-white rounded-2xl p-6 border-t-8 border-red-500 shadow-md relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-red-100 text-red-800 px-3 py-1 rounded-bl-lg text-sm font-bold">Hasta 45% Alc.</div>
+                        <h3 class="text-xl font-bold mb-2"><i class="fas fa-wine-bottle text-red-600 mr-2"></i> Destilados</h3>
+                        <p class="text-sm text-gray-600">Vodka, Tequila, Ron. Proceso de ebullición para concentrar.</p>
+                    </div>
+                </div>
 
-<div id="tab-comunicacion" class="hidden p-6 bg-gray-50">
-  <h1 class="text-2xl font-bold text-indigo-700">8. La Comunicación me Protege</h1>
-  <p>Aprende a comunicarte.</p>
+                <!-- TRAGO ESTÁNDAR -->
+                <div class="bg-indigo-50 rounded-2xl p-6 md:p-8 border-2 border-indigo-100">
+                    <div class="flex flex-col md:flex-row items-center gap-6 mb-6">
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-indigo-800 mb-2">⚖️ ¿Cuánto es "UN TRAGO"?</h3>
+                            <p class="text-gray-700 text-sm md:text-base">
+                                A través del <strong>Trago Estándar</strong> sabemos que todas estas bebidas contienen la <strong>MISMA</strong> cantidad de alcohol puro: <span class="bg-yellow-200 px-2 font-bold rounded">13 Gramos (15ml)</span>.
+                            </p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-indigo-200 text-center">
+                            <span class="block text-3xl font-bold text-indigo-600">1 = 1</span>
+                            <span class="text-xs text-gray-500">No importa el vaso,<br>importa el contenido.</span>
+                        </div>
+                    </div>
 
-  <!-- Test sample -->
-  <div class="bg-white p-4 rounded shadow my-4">
-    <h3 class="font-bold">Test: ¿Cuál es tu estilo?</h3>
-    <div id="comm-test-questions" class="grid grid-cols-1 gap-2 mt-2">
-      <label><input type="checkbox" class="comm-check" value="pasivo"> Trato de decir cosas que les gustan a los demás.</label>
-      <label><input type="checkbox" class="comm-check" value="agresivo"> Me gusta que hagan lo que digo.</label>
-      <label><input type="checkbox" class="comm-check" value="asertivo"> Expreso mis pensamientos de forma directa y clara.</label>
+                    <!-- GRID DE EQUIVALENCIAS - Ajustado para móvil (2 columnas) -->
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-center">
+                        <div class="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition">
+                            <div class="h-12 flex items-end justify-center mb-2"><i class="fas fa-prescription-bottle text-yellow-500 text-3xl"></i></div>
+                            <p class="text-xs font-bold text-gray-700">Cerveza Lata</p>
+                            <p class="text-[10px] text-gray-400">13g Alcohol</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition">
+                            <div class="h-12 flex items-end justify-center mb-2"><i class="fas fa-beer text-yellow-600 text-3xl"></i></div>
+                            <p class="text-xs font-bold text-gray-700">Cerveza (355ml)</p>
+                            <p class="text-[10px] text-gray-400">13g Alcohol</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition">
+                            <div class="h-12 flex items-end justify-center mb-2"><i class="fas fa-wine-glass text-red-500 text-3xl"></i></div>
+                            <p class="text-xs font-bold text-gray-700">Copa de Vino</p>
+                            <p class="text-[10px] text-gray-400">13g Alcohol</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition">
+                            <div class="h-12 flex items-end justify-center mb-2"><i class="fas fa-glass-whiskey text-orange-400 text-2xl"></i></div>
+                            <p class="text-xs font-bold text-gray-700">Caballito</p>
+                            <p class="text-[10px] text-gray-400">13g Alcohol</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition">
+                            <div class="h-12 flex items-end justify-center mb-2"><i class="fas fa-cocktail text-purple-500 text-3xl"></i></div>
+                            <p class="text-xs font-bold text-gray-700">Cuba (10ml destilado)</p>
+                            <p class="text-[10px] text-gray-400">13g Alcohol</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition">
+                            <div class="h-12 flex items-end justify-center mb-2"><i class="fas fa-glass-whiskey text-yellow-700 text-3xl"></i></div>
+                            <p class="text-xs font-bold text-gray-700">Whisky en rocas</p>
+                            <p class="text-[10px] text-gray-400">13g Alcohol</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. El Cerebro -->
+            <section>
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl font-bold text-purple-700 mb-2">2. Tu Cerebro bajo Efectos</h2>
+                    <p class="text-gray-600">Haz clic en los botones para ver las consecuencias.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                        <div class="p-5 text-center">
+                            <i class="fas fa-brain text-pink-500 text-4xl mb-3"></i>
+                            <h3 class="text-lg font-bold text-gray-800">Corteza Prefrontal</h3>
+                            <p class="text-xs text-gray-500 mb-4">Decisiones y Control</p>
+                            <button onclick="toggleAccordion('corteza')" class="accordion-btn w-full bg-pink-100 text-pink-700 py-3 px-4 rounded-lg font-bold flex justify-between items-center">
+                                <span>¿Qué pasa?</span>
+                                <i id="icon-corteza" class="fas fa-plus-circle text-xl"></i>
+                            </button>
+                            <div id="corteza" class="accordion-content mt-2 text-left bg-gray-50 p-3 rounded text-sm text-gray-700 border-l-4 border-pink-400">
+                                Te hace impulsivo. Pierdes la capacidad de medir riesgos y haces cosas que sobrio no harías.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                        <div class="p-5 text-center">
+                            <i class="fas fa-hdd text-yellow-500 text-4xl mb-3"></i>
+                            <h3 class="text-lg font-bold text-gray-800">El Hipocampo</h3>
+                            <p class="text-xs text-gray-500 mb-4">Memoria y Aprendizaje</p>
+                            <button onclick="toggleAccordion('hipocampo')" class="accordion-btn w-full bg-yellow-100 text-yellow-700 py-3 px-4 rounded-lg font-bold flex justify-between items-center">
+                                <span>¿Qué pasa?</span>
+                                <i id="icon-hipocampo" class="fas fa-plus-circle text-xl"></i>
+                            </button>
+                            <div id="hipocampo" class="accordion-content mt-2 text-left bg-gray-50 p-3 rounded text-sm text-gray-700 border-l-4 border-yellow-400">
+                                Produce "lagunas mentales". Bloquea tu capacidad de aprender. Puede dañar la memoria permanentemente.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                        <div class="p-5 text-center">
+                            <i class="fas fa-walking text-teal-500 text-4xl mb-3"></i>
+                            <h3 class="text-lg font-bold text-gray-800">El Cerebelo</h3>
+                            <p class="text-xs text-gray-500 mb-4">Coordinación</p>
+                            <button onclick="toggleAccordion('cerebelo')" class="accordion-btn w-full bg-teal-100 text-teal-700 py-3 px-4 rounded-lg font-bold flex justify-between items-center">
+                                <span>¿Qué pasa?</span>
+                                <i id="icon-cerebelo" class="fas fa-plus-circle text-xl"></i>
+                            </button>
+                            <div id="cerebelo" class="accordion-content mt-2 text-left bg-gray-50 p-3 rounded text-sm text-gray-700 border-l-4 border-teal-400">
+                                Pierdes el equilibrio, caminas mal y tus reflejos se vuelven lentos. Peligroso para conducir.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Tour del Cuerpo -->
+            <section class="bg-blue-50 rounded-3xl p-8 border-2 border-blue-100">
+                <div class="text-center mb-12">
+                    <h2 class="text-2xl font-bold text-blue-800 mb-2">3. El Tour del Alcohol</h2>
+                    <p class="text-gray-600">Recorrido por el cuerpo.</p>
+                </div>
+                <div class="relative max-w-3xl mx-auto">
+                    <div class="timeline-line hidden md:block"></div>
+                    <div class="flex flex-col space-y-8">
+                        <div class="flex items-center bg-white p-4 rounded-lg shadow relative z-10">
+                            <div class="bg-orange-100 p-3 rounded-full mr-4"><i class="fas fa-utensils text-orange-500"></i></div>
+                            <div><h4 class="font-bold text-orange-700">1. Absorción</h4><p class="text-sm">Estómago e Intestino.</p></div>
+                        </div>
+                        <div class="flex items-center bg-white p-4 rounded-lg shadow relative z-10">
+                            <div class="bg-red-100 p-3 rounded-full mr-4"><i class="fas fa-heartbeat text-red-500"></i></div>
+                            <div><h4 class="font-bold text-red-700">2. Distribución</h4><p class="text-sm">Viaja por la sangre a todo el cuerpo.</p></div>
+                        </div>
+                        <div class="flex items-center bg-white p-4 rounded-lg shadow relative z-10 border-l-4 border-red-500 liver-alert">
+                            <div class="bg-purple-100 p-3 rounded-full mr-4"><i class="fas fa-filter text-purple-600"></i></div>
+                            <div>
+                                <h4 class="font-bold text-purple-700">3. Metabolismo (Hígado)</h4>
+                                <p class="text-sm text-red-600 font-bold text-xs mt-1">¡OJO! En adolescentes el hígado no está maduro, se intoxica mucho más rápido.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center bg-white p-4 rounded-lg shadow relative z-10">
+                            <div class="bg-teal-100 p-3 rounded-full mr-4"><i class="fas fa-toilet text-teal-500"></i></div>
+                            <div><h4 class="font-bold text-teal-700">4. Eliminación</h4><p class="text-sm">Orina, sudor y aliento.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Mitos -->
+            <section class="bg-indigo-50 p-8 rounded-2xl">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-indigo-800">4. Mitos vs Realidad</h2>
+                    <p class="text-gray-500 text-sm">Toca las tarjetas para descubrir la verdad.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner shadow-md">
+                            <div class="flip-card-front"><i class="fas fa-child text-3xl text-orange-500 mb-2"></i><p class="font-bold text-sm px-2">"Enseñarles a beber desde niños"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
+                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Al exponerse desde la niñez, son más sensibles a daños físicos a largo plazo. La adicción puede comenzar desde esta etapa.</p></div>
+                        </div>
+                    </div>
+                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner shadow-md">
+                            <div class="flip-card-front"><i class="fas fa-dumbbell text-3xl text-purple-500 mb-2"></i><p class="font-bold text-sm px-2">"Mi amigo sabe beber y no se le 'sube'"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
+                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Que no parezca intoxicado significa que desarrolló <strong>tolerancia</strong>, un signo de alarma de posible adicción.</p></div>
+                        </div>
+                    </div>
+                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner shadow-md">
+                            <div class="flip-card-front"><i class="fas fa-calendar-week text-3xl text-green-500 mb-2"></i><p class="font-bold text-sm px-2">"Solo bebo los fines de semana"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
+                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">El daño depende de la cantidad, no del día. Beber grandes cantidades en poco tiempo causa daños graves y accidentes.</p></div>
+                        </div>
+                    </div>
+                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner shadow-md">
+                            <div class="flip-card-front"><i class="fas fa-bolt text-3xl text-yellow-500 mb-2"></i><p class="font-bold text-sm px-2">"Con energizantes no se me sube"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
+                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Mezclar altera funciones cerebrales y cardiacas. Puedes sufrir un ataque al corazón o daño renal.</p></div>
+                        </div>
+                    </div>
+                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner shadow-md">
+                            <div class="flip-card-front"><i class="fas fa-venus text-3xl text-pink-500 mb-2"></i><p class="font-bold text-sm px-2">"Las mujeres aguantan igual"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
+                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Tienen menos agua y enzimas para procesar alcohol. Se intoxican más rápido y por más tiempo con la misma cantidad.</p></div>
+                        </div>
+                    </div>
+                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner shadow-md">
+                            <div class="flip-card-front"><i class="fas fa-hand-paper text-3xl text-red-500 mb-2"></i><p class="font-bold text-sm px-2">"Puedo dejarlo cuando quiera"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
+                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Si empiezas en la adolescencia, eres <strong>4 veces más propenso</strong> a desarrollar una adicción que requiera tratamiento profesional.</p></div>
+                        </div>
+                    </div>
+                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner shadow-md">
+                            <div class="flip-card-front"><i class="fas fa-coffee text-3xl text-brown-600 mb-2 text-orange-800"></i><p class="font-bold text-sm px-2">"El café baja la borrachera"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
+                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Toma 3 horas eliminar 2 bebidas. Ni café ni baño frío aceleran el hígado. Solo estarás ebrio y despierto.</p></div>
+                        </div>
+                    </div>
+                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner shadow-md">
+                            <div class="flip-card-front"><i class="fas fa-pills text-3xl text-gray-600 mb-2"></i><p class="font-bold text-sm px-2">"Otras drogas son peores"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
+                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">El alcohol es el mayor problema actual. Responsable de casi el 10% de todas las enfermedades en México.</p></div>
+                        </div>
+                    </div>
+                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner shadow-md">
+                            <div class="flip-card-front"><i class="fas fa-wine-glass-alt text-3xl text-red-700 mb-2"></i><p class="font-bold text-sm px-2">"Una copa de vino es salud"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
+                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Solo aplica a adultos sanos (1 copa). Si tienes gastritis, diabetes o hipertensión, el vino empeora tu salud.</p></div>
+                        </div>
+                    </div>
+                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner shadow-md">
+                            <div class="flip-card-front"><i class="fas fa-beer text-3xl text-yellow-600 mb-2"></i><p class="font-bold text-sm px-2">"La cerveza no hace daño"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
+                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Mismos efectos. El abuso ocurre al pasar la capacidad del hígado, sin importar si es cerveza o tequila.</p></div>
+                        </div>
+                    </div>
+                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner shadow-md">
+                            <div class="flip-card-front"><i class="fas fa-car text-3xl text-blue-500 mb-2"></i><p class="font-bold text-sm px-2">"Manejo bien con poquito"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
+                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Desde la 2da copa se afectan los reflejos. Quienes dicen manejar bien, en realidad están arriesgando su vida.</p></div>
+                        </div>
+                    </div>
+                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner shadow-md">
+                            <div class="flip-card-front"><i class="fas fa-battery-full text-3xl text-lime-500 mb-2"></i><p class="font-bold text-sm px-2">"El alcohol da energía"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
+                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Falso. Es un depresor. Solo te desinhibe al principio, luego retrasa tu pensamiento y movimiento.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contacto -->
+            <section class="text-center py-8 bg-gray-100 rounded-xl">
+                <h3 class="font-bold text-gray-700">¿Necesitas Ayuda?</h3>
+                <p class="text-sm text-gray-600 mb-4">Acude a los Centros de Integración Juvenil.</p>
+                <div class="bg-indigo-700 text-white p-6 rounded-lg text-center mt-6 shadow-2xl max-w-3xl mx-auto">
+                    <h3 class="text-2xl font-black mb-3 text-yellow-500">¿Necesitas Ayuda o Más Info?</h3>
+                    <p class="mb-4 text-indigo-100">Si sientes que necesitas hablar con alguien o tienes dudas, contacta a los expertos de los <strong>Centros de Integración Juvenil (CIJ)</strong>.</p>
+                    <div class="w-full h-64 bg-gray-200 rounded-lg overflow-hidden mb-4 border-4 border-indigo-500">
+                        <iframe width="100%" height="100%" frameborder="0" style="border:0;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3765.626857646725!2d-99.64567352406016!3d19.29858654494562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d20aa65a044a2b%3A0x8e83348636d10c1!2sAv.%20de%20los%20Maestros%20336%2C%20Doctores%2C%2050060%20Toluca%20de%20Lerdo%2C%20M%C3%A9x.!5e0!3m2!1ses!2smx!4v1700000000000!5m2!1ses!2smx" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                    <div class="mt-4 bg-indigo-900 p-6 rounded-xl inline-block shadow-lg w-full max-w-lg">
+                        <p class="font-bold text-xl text-red-400 mb-2"><i class="fas fa-hospital-alt mr-2"></i> CIJ - Centro de Atención Ciudadana</p>
+                        <div class="text-left space-y-2">
+                            <p class="text-base flex items-start"><i class="fas fa-map-marker-alt mt-1 mr-2 text-yellow-500"></i> <span>Av. de los Maestros 336, Doctores, 50060 Toluca de Lerdo, Méx.</span></p>
+                            <p class="text-base"><i class="fas fa-phone mt-1 mr-2 text-green-400"></i> Teléfono Local: <span class="text-white font-mono text-xl font-bold">+52 722 213 0378</span></p>
+                            <p class="text-sm text-gray-300 border-t border-indigo-600 pt-2 mt-2"><i class="fas fa-globe mr-2"></i> CIJ NACIONAL: 55 5212 1212</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
     </div>
-    <button onclick="calculateCommunication()" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded">Analizar mi Estilo</button>
 
-    <div id="comm-result" class="hidden mt-4">
-      <h4 id="comm-title" class="font-bold"></h4>
-      <div id="comm-desc"></div>
+    <!-- ======================= PESTAÑA NUEVA: MUJER Y ALCOHOL ======================= -->
+    <div id="tab-mujer" class="hidden bg-gray-50 min-h-screen">
+        <div class="max-w-5xl mx-auto px-4 py-12">
+            <div class="text-center mb-10">
+                <h1 class="text-3xl font-bold text-pink-600 mb-3">👩 Mujer y Alcohol</h1>
+                <p class="text-lg text-gray-600">El alcohol afecta de manera diferente y más severa a las mujeres. Infórmate.</p>
+            </div>
+
+            <!-- Biología Diferenciada -->
+            <section class="mb-12">
+                <h3 class="text-xl font-bold text-pink-800 mb-6 border-b-2 border-pink-200 pb-2">¿Por qué te afecta más?</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-pink-400 hover:shadow-xl transition">
+                        <div class="text-pink-500 text-4xl mb-4"><i class="fas fa-venus"></i></div>
+                        <h4 class="font-bold text-gray-800 mb-2">Composición Corporal</h4>
+                        <p class="text-sm text-gray-600">Tu cuerpo tiene naturalmente <strong>menos agua y más grasa</strong>. El alcohol se diluye menos y se concentra más en tu sangre.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-pink-400 hover:shadow-xl transition">
+                        <div class="text-pink-500 text-4xl mb-4"><i class="fas fa-hourglass-half"></i></div>
+                        <h4 class="font-bold text-gray-800 mb-2">Metabolismo Lento</h4>
+                        <p class="text-sm text-gray-600">Tienes menos de la enzima que destruye el alcohol (ADH). Tardas más en eliminarlo y los efectos duran más tiempo.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-pink-400 hover:shadow-xl transition">
+                        <div class="text-pink-500 text-4xl mb-4"><i class="fas fa-procedures"></i></div>
+                        <h4 class="font-bold text-gray-800 mb-2">Daño Acelerado</h4>
+                        <p class="text-sm text-gray-600">El hígado y otros órganos se dañan con menor cantidad de alcohol y en menos tiempo (fenómeno de telescoping).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Factores de Riesgo -->
+            <section class="mb-12">
+                <h3 class="text-xl font-bold text-purple-800 mb-6 border-b-2 border-purple-200 pb-2">Factores de Riesgo</h3>
+                <div class="space-y-4">
+                    <!-- Personal -->
+                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                        <button onclick="toggleAccordion('risk-personal')" class="accordion-btn w-full bg-pink-50 px-6 py-4 text-left font-bold text-pink-700 flex justify-between items-center">
+                            <span><i class="fas fa-user mr-2"></i> Ámbito Personal</span>
+                            <i id="icon-risk-personal" class="fas fa-plus-circle text-xl"></i>
+                        </button>
+                        <div id="risk-personal" class="accordion-content bg-white px-6 pb-4 pt-2 text-gray-600 text-sm">
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Imitar el rol masculino para buscar "igualdad".</li>
+                                <li>Relaciones afectivas con parejas que beben (necesidad de aceptación).</li>
+                                <li>Depresión, ansiedad o baja autoestima.</li>
+                                <li>Vivir violencia sexual.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Familiar -->
+                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                        <button onclick="toggleAccordion('risk-familiar')" class="accordion-btn w-full bg-green-50 px-6 py-4 text-left font-bold text-green-700 flex justify-between items-center">
+                            <span><i class="fas fa-home mr-2"></i> Ámbito Familiar</span>
+                            <i id="icon-risk-familiar" class="fas fa-plus-circle text-xl"></i>
+                        </button>
+                        <div id="risk-familiar" class="accordion-content bg-white px-6 pb-4 pt-2 text-gray-600 text-sm">
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Falta de atención, cuidado o seguridad en casa.</li>
+                                <li>Pérdidas importantes (separaciones, muerte).</li>
+                                <li>Sufrir violencia familiar o abuso sexual.</li>
+                                <li>Exceso de responsabilidades familiares.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Social -->
+                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                        <button onclick="toggleAccordion('risk-social')" class="accordion-btn w-full bg-purple-50 px-6 py-4 text-left font-bold text-purple-700 flex justify-between items-center">
+                            <span><i class="fas fa-users mr-2"></i> Ámbito Social</span>
+                            <i id="icon-risk-social" class="fas fa-plus-circle text-xl"></i>
+                        </button>
+                        <div id="risk-social" class="accordion-content bg-white px-6 pb-4 pt-2 text-gray-600 text-sm">
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Presión social para ser abnegada y "servir a otros".</li>
+                                <li>Situación de pobreza o ser madre soltera.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Embarazo y Lactancia (Alerta Vital) -->
+            <section class="bg-gradient-to-r from-rose-500 to-pink-600 rounded-2xl p-8 text-white shadow-2xl">
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="bg-white p-4 rounded-full shadow-lg flex-shrink-0">
+                        <i class="fas fa-baby-carriage text-6xl text-pink-500"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2">¡Alerta Vital: Embarazo y Lactancia!</h3>
+                        <p class="mb-4 text-pink-100">El alcohol atraviesa la placenta y llega a la leche materna. No existe una cantidad segura.</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white/20 p-4 rounded-lg backdrop-blur-sm">
+                                <h4 class="font-bold text-yellow-300 mb-1"><i class="fas fa-exclamation-circle"></i> En el Embarazo</h4>
+                                <p class="text-sm">Causa <strong>Síndrome Alcohólico Fetal</strong>: Daño cerebral irreversible, malformaciones faciales y retraso mental y físico en el bebé.</p>
+                            </div>
+                            <div class="bg-white/20 p-4 rounded-lg backdrop-blur-sm">
+                                <h4 class="font-bold text-yellow-300 mb-1"><i class="fas fa-info-circle"></i> En la Lactancia</h4>
+                                <p class="text-sm">Pasa a la leche. El bebé lo metaboliza muy lento. Altera su sueño, puede causar hipoglucemia y disminuye la producción de leche.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
-  </div>
 
-  <!-- Diagrama Mermaid corregido -->
-  <div class="mt-6">
-    <h3 class="font-bold mb-2">Diagrama: ¿Cómo decir NO a la presión social?</h3>
-    <div class="mermaid" id="mermaid-1">graph TD
-A[Inicio: Presión para beber] --> B{¿Quieres beber?}
-B -->|Sí| C[Acepta responsablemente]
-B -->|No| D[Rechazar invitación]
-D --> E{Elige Técnica}
-E -->|Directa| F[Di: No quiero]
-E -->|Niebla| G[Excusa: Mis padres sabrán]
-E -->|Disco Rayado| H[Repite: No, gracias]
-E -->|Interrogación| I[Pregunta: ¿Por qué te importa?]
-E -->|Resuelve| J[Acepta crítica: Quizás, pero no]
-F --> K[Mantén la calma]
-G --> K
-H --> K
-I --> K
-J --> K
-K --> L[Fin: Te mantienes firme]
-</div>
-  </div>
-</div>
+    <!-- ======================= PESTAÑA NUEVA: COMUNICACIÓN ======================= -->
+    <div id="tab-comunicacion" class="hidden bg-gray-50 min-h-screen">
+        <div class="max-w-5xl mx-auto px-4 py-12">
+            <div class="text-center mb-12">
+                <h1 class="text-3xl font-bold text-indigo-700 mb-4">8. La Comunicación me Protege</h1>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Al comunicarnos transmitimos información con las palabras, pero también con el cuerpo (miradas, posturas, gestos). Aprende a expresarte para protegerte.</p>
+            </div>
 
-<div id="tab-emociones" class="hidden p-6 bg-gray-50">
-  <h1 class="text-2xl font-bold">Emociones</h1>
-</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start mb-12">
+                
+                <!-- Tarjeta Asertividad -->
+                <div class="bg-white rounded-2xl shadow-lg border-t-8 border-pink-500 p-6 relative overflow-visible">
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white p-3 rounded-full shadow-lg">
+                        <i class="fas fa-comment-dots text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-center text-pink-700 mt-6 mb-4">Asertividad</h3>
+                    <div class="bg-pink-50 p-4 rounded-lg mb-6 text-sm text-gray-700">
+                        Es la habilidad de expresarte de forma clara, amable y respetuosa. Te permite comunicar tus ideas y defender tus derechos sin herir a los demás.
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="chat-bubble right">
+                            "Entiendo lo que me dices, pero no estoy de acuerdo."
+                        </div>
+                        <div class="chat-bubble right">
+                            "Yo creo algo diferente."
+                        </div>
+                    </div>
+                </div>
 
-<!-- Scripts: init Mermaid y funciones necesarias -->
-<script>
-  // Inicializa mermaid de forma segura
-  if (typeof mermaid !== 'undefined') {
-    try { mermaid.initialize({ startOnLoad: true, securityLevel: 'loose' }); } catch(e){ console.warn('mermaid init error', e); }
-  }
+                <!-- Tarjeta Escucha Activa -->
+                <div class="bg-white rounded-2xl shadow-lg border-t-8 border-yellow-400 p-6 relative overflow-visible">
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-white p-3 rounded-full shadow-lg">
+                        <i class="fas fa-ear-listen text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-center text-yellow-600 mt-6 mb-4">Escucha Activa</h3>
+                    <div class="bg-yellow-50 p-4 rounded-lg mb-6 text-sm text-gray-700">
+                        Es la habilidad de estar alerta para comprender los sentimientos, ideas o pensamientos de la persona que nos está hablando.
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="chat-bubble left">
+                            "Te escucho, sígueme contando."
+                        </div>
+                        <div class="chat-bubble left">
+                            "Soy todo oídos."
+                        </div>
+                    </div>
+                </div>
 
-  // switchTab: muestra la pestaña y actualiza clase activa
-  function switchTab(tabId){
-    const tabs = ['guia','mujer','comunicacion','emociones'];
-    tabs.forEach(t=>{
-      const el = document.getElementById('tab-'+t);
-      if(!el) return;
-      if(t===tabId){ el.classList.remove('hidden'); el.classList.add('block'); }
-      else { el.classList.add('hidden'); el.classList.remove('block'); }
-    });
-    // actualizar botones
-    tabs.forEach(t=>{
-      const btn = document.getElementById('btn-'+t);
-      if(!btn) return;
-      if(t===tabId) btn.classList.add('active'); else btn.classList.remove('active');
-    });
-  }
+            </div>
 
-  // toggleAccordion: muestra/oculta contenido de acordeón
-  function toggleAccordion(id){
-    const el = document.getElementById(id);
-    if(!el) return;
-    el.classList.toggle('active');
-  }
+            <!-- Test de Comunicación -->
+            <div class="bg-white rounded-xl shadow-lg p-8 border-l-8 border-blue-500 mb-12">
+                <h3 class="text-2xl font-bold text-blue-800 mb-4"><i class="fas fa-tasks mr-2"></i> Test: ¿Cuál es tu estilo de comunicación?</h3>
+                <p class="text-gray-600 mb-6">Selecciona las frases con las que te identificas más:</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" id="comm-test-questions">
+                    <!-- Pasivo -->
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="pasivo"><span class="ml-3 text-gray-700">Trato de decir cosas que les gustan a los demás.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="pasivo"><span class="ml-3 text-gray-700">Evito contradecir aunque no esté de acuerdo.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="pasivo"><span class="ml-3 text-gray-700">Me da pena decir lo que siento o dudar.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="pasivo"><span class="ml-3 text-gray-700">Hago lo posible para agradarle a todo el mundo.</span></label>
 
-  // calculateCommunication: ejemplo simple de evaluación
-  function calculateCommunication(){
-    const checks = Array.from(document.querySelectorAll('.comm-check'));
-    const counts = { asertivo:0, pasivo:0, agresivo:0 };
-    checks.forEach(c=>{ if(c.checked){ counts[c.value] = (counts[c.value]||0)+1; } });
-    // lógica simple: tomar mayor
-    let maxType = 'asertivo'; let maxVal = counts.asertivo;
-    Object.keys(counts).forEach(k=>{ if(counts[k]>maxVal){ maxVal = counts[k]; maxType = k; } });
-    const title = document.getElementById('comm-title');
-    const desc = document.getElementById('comm-desc');
-    title.textContent = (maxVal===0) ? 'Sin respuestas' : 'Estilo principal: ' + maxType.toUpperCase();
-    desc.textContent = (maxVal===0) ? 'Selecciona al menos una afirmación para obtener resultados.' : 'Has seleccionado ' + maxVal + ' ítems relacionados con este estilo.';
-    document.getElementById('comm-result').classList.remove('hidden');
-  }
+                    <!-- Agresivo -->
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="agresivo"><span class="ml-3 text-gray-700">Me gusta que hagan lo que digo, aunque no quieran.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="agresivo"><span class="ml-3 text-gray-700">Me río de los errores de mis amistades.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="agresivo"><span class="ml-3 text-gray-700">Me enoja que me digan que fallé y contesto mal.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="agresivo"><span class="ml-3 text-gray-700">Hago lo posible por tener poder sobre los demás.</span></label>
 
-  // Asegurar que mermaid vuelva a renderizar si se muestra la pestaña (por si fue cargado en oculto)
-  document.addEventListener('visibilitychange', function(){ if(!document.hidden){ if(window.mermaid && mermaid.init) mermaid.init(); } });
+                    <!-- Asertivo -->
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="asertivo"><span class="ml-3 text-gray-700">Expreso mis pensamientos de forma directa y clara.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="asertivo"><span class="ml-3 text-gray-700">Le digo a mis amigos lo que me gusta de ellos.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="asertivo"><span class="ml-3 text-gray-700">Hablo bien de mí, sin presumir.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="asertivo"><span class="ml-3 text-gray-700">Acepto y respeto errores de los demás.</span></label>
+                </div>
 
-  // Ejecutar una primera vez para renderizar diagramas
-  window.addEventListener('load', function(){
-    // renderizar mermaid manualmente si startOnLoad no lo hizo
-    if(window.mermaid && typeof mermaid.init === 'function'){
-      try{ mermaid.init(undefined, document.querySelectorAll('.mermaid')); }catch(e){ console.warn('mermaid render error', e); }
-    }
-  });
-</script>
+                <button onclick="calculateCommunication()" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-md hover:bg-blue-700 transition transform hover:scale-105">
+                    Analizar mi Estilo
+                </button>
 
+                <!-- Resultado del Test -->
+                <div id="comm-result" class="hidden mt-8">
+                    <h4 id="comm-title" class="text-2xl font-bold mb-4"></h4>
+                    <div id="comm-desc" class="bg-gray-50 p-6 rounded-lg border-l-4 mb-4"></div>
+                    
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1 bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <h5 class="font-bold text-blue-800 mb-2"><i class="fas fa-user-graduate mr-2"></i> Para Adolescentes:</h5>
+                            <p id="comm-teen-advice" class="text-sm text-gray-700"></p>
+                        </div>
+                        <div class="flex-1 bg-green-50 p-4 rounded-lg border border-green-200">
+                            <h5 class="font-bold text-green-800 mb-2"><i class="fas fa-user-friends mr-2"></i> Para Padres:</h5>
+                            <p id="comm-parent-advice" class="text-sm text-gray-700"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Diagrama de Flujo (CORREGIDO A PRUEBA DE FALLOS) -->
+            <div class="mt-12 bg-white rounded-xl shadow-lg p-8 border-t-8 border-purple-500 mb-12">
+                <h3 class="text-2xl font-bold text-purple-800 mb-6 text-center">
+                    <i class="fas fa-shield-alt mr-2"></i> Diagrama: ¿Cómo decir NO a la presión social?
+                </h3>
+                <div class="mermaid flex justify-center">
+                    graph TD
+                        A[Inicio: Presión para beber] --> B{¿Quieres beber?}
+                        B -->|Sí| C[Acepta responsablemente]
+                        B -->|No| D[Rechazar invitación]
+                        D --> E{Elige Técnica}
+                        E -->|Directa| F[Di: No quiero]
+                        E -->|Niebla| G[Excusa: Mis padres sabrán]
+                        E -->|Disco Rayado| H[Repite: No, gracias]
+                        E -->|Interrogación| I[Pregunta: Por qué te importa]
+                        E -->|Resuelve| J[Acepta crítica: Quizás, pero no]
+                        F --> K[Mantén la calma]
+                        G --> K
+                        H --> K
+                        I --> K
+                        J --> K
+                        K --> L[Fin: Te mantienes firme]
+                </div>
+            </div>
+
+            <!-- NUEVA SECCIÓN: APRENDE A DECIR ¡NO! -->
+            <div class="bg-pink-50 rounded-xl p-8 border-l-8 border-pink-500">
+                <h3 class="text-2xl font-bold text-pink-800 mb-6 text-center">8.1 ¡Aprendo a decir ¡NO!</h3>
+                <p class="text-center text-gray-700 mb-8 max-w-3xl mx-auto">
+                    Algunas veces te puedes sentir presionado(a) por compañeros(as), pero decir NO es tu derecho. 
+                    Nadie puede forzarte a hacer lo que no quieres. ¡Aquí tienes las técnicas para defenderte!
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Tarjetas de técnicas (Sin cambios) -->
+                    <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-pink-400">
+                        <h4 class="font-bold text-pink-600 text-lg mb-2">🛑 Técnica Directa</h4>
+                        <div class="text-sm text-gray-600 mb-4">
+                            Mira a los ojos, pon cara seria y di frases cortas y claras.
+                        </div>
+                        <div class="bg-pink-50 p-3 rounded text-pink-800 font-bold text-center text-sm">
+                            "No quiero"<br>"No me interesa"<br>"No lo necesito"
+                        </div>
+                    </div>
+                    <!-- (Resto de tarjetas iguales...) -->
+                    <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-yellow-400">
+                        <h4 class="font-bold text-yellow-600 text-lg mb-2">💿 Disco Rayado</h4>
+                        <div class="text-sm text-gray-600 mb-4">
+                            Repite tu negativa una y otra vez, con calma, sin dar explicaciones extra.
+                        </div>
+                        <div class="bg-yellow-50 p-3 rounded text-yellow-800 font-bold text-center text-sm">
+                            "No, gracias"<br>"Te dije que no"<br>"Entiendo, pero no quiero"
+                        </div>
+                    </div>
+                    <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-400">
+                        <h4 class="font-bold text-blue-600 text-lg mb-2">☁️ Banco de Niebla</h4>
+                        <div class="text-sm text-gray-600 mb-4">
+                            Pon una excusa externa o da la razón parcialmente sin ceder.
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded text-blue-800 font-bold text-center text-sm">
+                            "No voy a tomar porque mis papás se darán cuenta y me irá mal"
+                        </div>
+                    </div>
+                    <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-green-400">
+                        <h4 class="font-bold text-green-600 text-lg mb-2">🤝 La Tregua</h4>
+                        <div class="text-sm text-gray-600 mb-4">
+                            Haz un trato: tú respetas que ellos beban, ellos respetan que tú no.
+                        </div>
+                        <div class="bg-green-50 p-3 rounded text-green-800 font-bold text-center text-sm">
+                            "Yo no te digo nada de tu forma de beber, así que tú no insistas en que tome"
+                        </div>
+                    </div>
+                    <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-400">
+                        <h4 class="font-bold text-purple-600 text-lg mb-2">🧠 Resuelve</h4>
+                        <div class="text-sm text-gray-600 mb-4">
+                            Enfrenta la crítica aceptando que pueden pensar diferente, pero manteniendo tu decisión.
+                        </div>
+                        <div class="bg-purple-50 p-3 rounded text-purple-800 font-bold text-center text-sm">
+                            "Puede que te parezca miedoso, pero he decidido no hacerlo"
+                        </div>
+                    </div>
+                    <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-orange-400">
+                        <h4 class="font-bold text-orange-600 text-lg mb-2">❓ Interrogación</h4>
+                        <div class="text-sm text-gray-600 mb-4">
+                            Devuelve la presión con una pregunta que los haga pensar.
+                        </div>
+                        <div class="bg-orange-50 p-3 rounded text-orange-800 font-bold text-center text-sm">
+                            "¿Y qué tiene de raro que no quiera beber alcohol?"
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ======================= PESTAÑA NUEVA: EMOCIONES ======================= -->
+    <div id="tab-emociones" class="hidden bg-gray-50 min-h-screen">
+        <div class="max-w-5xl mx-auto px-4 py-12">
+            <div class="text-center mb-12">
+                <h1 class="text-3xl font-bold text-purple-700 mb-4">🧘 Manejo de Emociones</h1>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Aprende a controlar el enojo y otras emociones fuertes sin recurrir al alcohol.</p>
+            </div>
+
+            <!-- Diagrama de Flujo: El Semáforo de la Calma (CORREGIDO) -->
+            <div class="bg-white rounded-xl shadow-lg p-8 border-t-8 border-yellow-500 mb-12">
+                <h3 class="text-2xl font-bold text-yellow-800 mb-6 text-center">
+                    <i class="fas fa-traffic-light mr-2"></i> El Semáforo de la Calma
+                </h3>
+                <div class="mermaid flex justify-center">
+                    graph TD
+                        A[Inicio: Siento emoción fuerte] --> B{Qué lo provocó}
+                        B -->|1. Analizar| C[Identifica la causa]
+                        C --> D{Puedo responder tranquilo}
+                        D -->|NO| E[ALTO: Tiempo Fuera]
+                        E --> F[Aléjate y Respira]
+                        F --> G{Elige Estrategia}
+                        G -->|Verbal| H[Autoverbalizaciones]
+                        G -->|Física| I[Relajación]
+                        H --> J[Ya estoy calmado]
+                        I --> J
+                        J -->|SÍ| K[Ensayo Mental]
+                        K -->|Visualiza| L[Imagínate respondiendo bien]
+                        L --> M[Regresa y sé Asertivo]
+                        D -->|SÍ| M
+                        M --> N[Fin: Controlaste la emoción]
+                </div>
+            </div>
+
+            <!-- Tarjetas de Estrategias (Sin cambios) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500 hover:shadow-xl transition">
+                    <div class="text-blue-500 text-4xl mb-4"><i class="fas fa-search"></i></div>
+                    <h4 class="font-bold text-gray-800 text-lg mb-2">Analizar el Sentimiento</h4>
+                    <p class="text-sm text-gray-600">Identifica qué te hace explotar (perder un juego, que usen tus cosas, que no te den la razón).</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500 hover:shadow-xl transition">
+                    <div class="text-red-500 text-4xl mb-4"><i class="fas fa-hand-paper"></i></div>
+                    <h4 class="font-bold text-gray-800 text-lg mb-2">Detente y Piensa</h4>
+                    <p class="text-sm text-gray-600">Antes de responder, analiza las consecuencias. Si lo haces seguido, aprenderás a detenerte a tiempo.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-500 hover:shadow-xl transition">
+                    <div class="text-orange-500 text-4xl mb-4"><i class="fas fa-walking"></i></div>
+                    <h4 class="font-bold text-gray-800 text-lg mb-2">Tiempo Fuera</h4>
+                    <p class="text-sm text-gray-600">Aléjate físicamente. Regresa solo cuando estés calmado y listo para buscar una solución.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500 hover:shadow-xl transition">
+                    <div class="text-purple-500 text-4xl mb-4"><i class="fas fa-comment-medical"></i></div>
+                    <h4 class="font-bold text-gray-800 text-lg mb-2">Autoverbalizaciones</h4>
+                    <p class="text-sm text-gray-600">Repite frases clave: "Tranquilo", "No vale la pena", "Puedo manejar esto", "Respira".</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500 hover:shadow-xl transition">
+                    <div class="text-teal-500 text-4xl mb-4"><i class="fas fa-spa"></i></div>
+                    <h4 class="font-bold text-gray-800 text-lg mb-2">Técnicas de Relajación</h4>
+                    <p class="text-sm text-gray-600">Busca un lugar tranquilo: escucha música, medita, haz deporte, date un baño caliente o platica con alguien.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-indigo-500 hover:shadow-xl transition">
+                    <div class="text-indigo-500 text-4xl mb-4"><i class="fas fa-brain"></i></div>
+                    <h4 class="font-bold text-gray-800 text-lg mb-2">Ensayo Mental</h4>
+                    <p class="text-sm text-gray-600">Imagínate en la situación difícil pero actuando calmado y seguro. Practícalo en tu mente antes de hacerlo.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================= PESTAÑA: EL CUERPO HABLA ======================= -->
+    <div id="tab-cuerpo" class="hidden bg-gray-50 min-h-screen">
+        <div class="max-w-6xl mx-auto px-4 py-12">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-pink-700 mb-2"><i class="fas fa-procedures mr-2"></i> Escáner Corporal</h1>
+                <p class="text-gray-600">Toca los puntos parpadeantes para ver el daño real. <strong>¿Vale la pena el riesgo?</strong></p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-8 items-start">
+                
+                <!-- Columna Izquierda: SILUETA INTERACTIVA -->
+                <div class="w-full lg:w-1/2 flex justify-center">
+                    <div class="body-container rounded-xl shadow-inner bg-white border border-gray-200 relative">
+                        <!-- Hotspots (Botones de órganos) -->
+                        <div class="organ-hotspot pos-brain" onclick="showOrganInfo('cerebro', this)">
+                            <i class="fas fa-brain text-xl"></i>
+                        </div>
+                        <div class="organ-hotspot pos-heart" onclick="showOrganInfo('corazon', this)">
+                            <i class="fas fa-heartbeat text-xl"></i>
+                        </div>
+                        <div class="organ-hotspot pos-liver" onclick="showOrganInfo('higado', this)">
+                            <i class="fas fa-filter text-xl"></i>
+                        </div>
+                        <div class="organ-hotspot pos-stomach" onclick="showOrganInfo('estomago', this)">
+                            <i class="fas fa-utensils text-xl"></i>
+                        </div>
+                        <div class="organ-hotspot pos-sexual" onclick="showOrganInfo('sexual', this)">
+                            <i class="fas fa-venus-mars text-xl"></i>
+                        </div>
+                        
+                        <p class="absolute bottom-4 w-full text-center text-xs text-gray-400 animate-pulse">Toca un órgano</p>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: INFO PANEL -->
+                <div class="w-full lg:w-1/2">
+                    <div id="organ-info-panel" class="bg-white rounded-2xl shadow-xl p-6 border-t-8 border-pink-500 min-h-[400px]">
+                        <h3 id="organ-title" class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-user-md mr-2 text-pink-500"></i> Selecciona un órgano
+                        </h3>
+                        
+                        <!-- Contenido Dinámico -->
+                        <div id="organ-content" class="text-gray-600">
+                            <p>Haz clic en los puntos brillantes de la silueta para descubrir cómo el alcohol destruye cada parte de tu cuerpo, desde el primer trago hasta la adicción.</p>
+                            
+                            <!-- Dato Cirrosis (Visible por defecto) -->
+                            <div class="mt-8 bg-yellow-50 p-4 rounded-lg border border-yellow-300">
+                                <div class="flex items-center">
+                                    <i class="fas fa-skull-crossbones text-3xl text-yellow-600 mr-4"></i>
+                                    <div>
+                                        <h4 class="font-bold text-yellow-800">DATO MORTAL:</h4>
+                                        <p class="text-sm">La cirrosis está entre las <strong>10 primeras causas de muerte</strong> en México.</p>
+                                        <p class="text-lg font-black text-yellow-900 mt-1">4 de cada 10 casos son por ALCOHOL.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección Inmediato vs Largo Plazo -->
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-red-50 p-6 rounded-xl border border-red-200">
+                    <h4 class="text-xl font-bold text-red-700 mb-3"><i class="fas fa-bolt mr-2"></i> Efectos Inmediatos (La Fiesta)</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-2">
+                        <li>Desinhibición y euforia falsa.</li>
+                        <li>Visión borrosa y lenguaje confuso.</li>
+                        <li>Vómito, mareo y náuseas.</li>
+                        <li><strong>Pérdida de memoria (Blackout).</strong></li>
+                        <li>Riesgo de accidentes y coma etílico.</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800 text-white p-6 rounded-xl border border-gray-600">
+                    <h4 class="text-xl font-bold text-gray-200 mb-3"><i class="fas fa-hourglass-end mr-2"></i> A Largo Plazo (La Realidad)</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-2">
+                        <li>Adicción física y psicológica.</li>
+                        <li><strong>Cirrosis y Hepatitis alcohólica.</strong></li>
+                        <li>Impotencia sexual y daños reproductivos.</li>
+                        <li>Desnutrición y depresión severa.</li>
+                        <li>Muerte prematura.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================= PESTAÑA 2: EL SEMÁFORO ======================= -->
+    <div id="tab-semaforo" class="hidden bg-gray-50 min-h-screen">
+        <div class="max-w-5xl mx-auto px-4 py-12">
+            
+            <div class="text-center mb-10">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">🚦 El Semáforo del Consumo</h1>
+                <p class="text-lg text-gray-600">No todo consumo es igual, pero en tu edad... todo cuenta. ¡Descúbrelo!</p>
+            </div>
+
+            <!-- Tarjetas de Definición -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+                <!-- Uso Nocivo -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border-t-8 border-yellow-400 hover:shadow-xl transition">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-yellow-100 p-3 rounded-full mr-3"><i class="fas fa-exclamation-triangle text-yellow-600 text-2xl"></i></div>
+                        <h3 class="text-xl font-bold text-gray-800">Uso Nocivo</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">El inicio del problema. Causa daños a la salud o sociales.</p>
+                    <ul class="text-sm text-gray-600 list-disc list-inside bg-yellow-50 p-3 rounded">
+                        <li>Cualquier consumo en <strong>menores de edad</strong>.</li>
+                        <li>Embarazo.</li>
+                        <li>Manejar vehículos.</li>
+                    </ul>
+                </div>
+                <!-- Abuso -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border-t-8 border-orange-500 hover:shadow-xl transition">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-orange-100 p-3 rounded-full mr-3"><i class="fas fa-glass-martini-alt text-orange-600 text-2xl"></i></div>
+                        <h3 class="text-xl font-bold text-gray-800">Abuso</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Patrón de uso continuo que causa daños significativos.</p>
+                    <ul class="text-sm text-gray-600 list-disc list-inside bg-orange-50 p-3 rounded">
+                        <li>Problemas escolares o familiares.</li>
+                        <li>Sexo sin protección.</li>
+                        <li><strong>Hombres:</strong> +5 copas/ocasión.</li>
+                        <li><strong>Mujeres:</strong> +4 copas/ocasión.</li>
+                    </ul>
+                </div>
+                <!-- Adicción -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border-t-8 border-red-600 hover:shadow-xl transition">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-red-100 p-3 rounded-full mr-3"><i class="fas fa-skull text-red-600 text-2xl"></i></div>
+                        <h3 class="text-xl font-bold text-gray-800">Adicción</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Dependencia física y psicológica.</p>
+                    <ul class="text-sm text-gray-600 list-disc list-inside bg-red-50 p-3 rounded">
+                        <li>Deseo intenso e irresistible.</li>
+                        <li>Necesidad de beber para sentirse bien.</li>
+                        <li>Síndrome de abstinencia.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Checklist Interactivo -->
+            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-3xl mx-auto border border-gray-200">
+                <div class="bg-indigo-600 p-6 text-white text-center">
+                    <h3 class="text-2xl font-bold"><i class="fas fa-search mr-2"></i> Checklist: Detector de Riesgos</h3>
+                    <p class="opacity-90 text-sm">Selecciona las situaciones que creas que son "Abuso" o "Riesgo".</p>
+                </div>
+                <div class="p-8">
+                    <div class="grid grid-cols-1 gap-4" id="abuse-checklist">
+                        <label class="cursor-pointer relative">
+                            <input type="checkbox" class="peer sr-only detector-check">
+                            <div class="p-4 rounded-lg border-2 border-gray-200 hover:bg-gray-50 peer-checked:border-red-500 peer-checked:bg-red-50 transition flex items-center">
+                                <i class="far fa-square text-gray-400 mr-3 text-xl peer-checked:hidden"></i>
+                                <i class="fas fa-check-square text-red-500 mr-3 text-xl hidden peer-checked:block"></i>
+                                <span class="font-medium text-gray-700">Tomar una cerveza teniendo 15 años.</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer relative">
+                            <input type="checkbox" class="peer sr-only detector-check">
+                            <div class="p-4 rounded-lg border-2 border-gray-200 hover:bg-gray-50 peer-checked:border-red-500 peer-checked:bg-red-50 transition flex items-center">
+                                <i class="far fa-square text-gray-400 mr-3 text-xl peer-checked:hidden"></i>
+                                <i class="fas fa-check-square text-red-500 mr-3 text-xl hidden peer-checked:block"></i>
+                                <span class="font-medium text-gray-700">Manejar la moto después de 2 copas.</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer relative">
+                            <input type="checkbox" class="peer sr-only detector-check">
+                            <div class="p-4 rounded-lg border-2 border-gray-200 hover:bg-gray-50 peer-checked:border-red-500 peer-checked:bg-red-50 transition flex items-center">
+                                <i class="far fa-square text-gray-400 mr-3 text-xl peer-checked:hidden"></i>
+                                <i class="fas fa-check-square text-red-500 mr-3 text-xl hidden peer-checked:block"></i>
+                                <span class="font-medium text-gray-700">Tomar 5 copas o más en una sola fiesta.</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer relative">
+                            <input type="checkbox" class="peer sr-only detector-check">
+                            <div class="p-4 rounded-lg border-2 border-gray-200 hover:bg-gray-50 peer-checked:border-red-500 peer-checked:bg-red-50 transition flex items-center">
+                                <i class="far fa-square text-gray-400 mr-3 text-xl peer-checked:hidden"></i>
+                                <i class="fas fa-check-square text-red-500 mr-3 text-xl hidden peer-checked:block"></i>
+                                <span class="font-medium text-gray-700">Beber estando embarazada.</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="mt-8 text-center">
+                        <button onclick="validateAbuse()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105">
+                            Evaluar Respuestas
+                        </button>
+                    </div>
+                    <div id="abuse-result" class="hidden mt-6 bg-red-100 border-l-4 border-red-600 p-4 rounded text-center animate-fade-in">
+                        <h4 class="text-xl font-bold text-red-800 mb-2">¡La Respuesta es TODAS! 🚨</h4>
+                        <p class="text-red-700">¿Te sorprendiste? Recuerda la regla de oro: <br><strong>"En la adolescencia, CUALQUIER consumo de alcohol se convierte en ABUSO."</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================= PESTAÑA 4: TEST DE CONSUMO ======================= -->
+    <div id="tab-consumo" class="hidden bg-gray-50 min-h-screen">
+        <div class="max-w-3xl mx-auto px-4 py-12">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-indigo-800 mb-2"><i class="fas fa-wine-glass-alt mr-2"></i> Test de Consumo</h1>
+                <p class="text-gray-600">Responde con sinceridad. Tus respuestas son anónimas.</p>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-200">
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">1. ¿Con qué frecuencia consumes bebidas alcohólicas?</h3>
+                    <div class="space-y-2">
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q1" value="0" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Nunca</span></label>
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q1" value="1" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Una vez al mes o menos</span></label>
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q1" value="2" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Dos a cuatro veces al mes</span></label>
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q1" value="3" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Dos a tres veces por semana</span></label>
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q1" value="4" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Cuatro o más veces por semana</span></label>
+                    </div>
+                </div>
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">2. Cuando bebes, ¿cuántos tragos estándar te tomas?</h3>
+                    <div class="space-y-2">
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q2" value="0" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Uno o dos</span></label>
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q2" value="1" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Tres o cuatro</span></label>
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q2" value="2" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Cinco o seis</span></label>
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q2" value="3" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Siete a nueve</span></label>
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q2" value="4" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Diez o más</span></label>
+                    </div>
+                </div>
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">3. ¿Con qué frecuencia tomas cinco o más tragos estándar en un mismo día?</h3>
+                    <div class="space-y-2">
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q3" value="0" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Nunca</span></label>
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q3" value="1" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Una vez al mes o menos</span></label>
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q3" value="2" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Mensualmente</span></label>
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q3" value="3" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Semanalmente</span></label>
+                        <label class="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer transition"><input type="radio" name="q3" value="4" class="h-5 w-5 text-indigo-600"><span class="ml-3 text-gray-700">Diario o casi diario</span></label>
+                    </div>
+                </div>
+                <button onclick="calculateConsumption()" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-lg shadow-lg hover:bg-indigo-700 transition transform hover:scale-105 text-lg">CALCULAR MI SEMÁFORO</button>
+            </div>
+            <div id="consumption-result" class="hidden mt-10">
+                <div class="flex justify-center mb-8">
+                    <div class="traffic-light">
+                        <div id="light-red" class="light red"></div>
+                        <div id="light-yellow" class="light yellow"></div>
+                        <div id="light-green" class="light green"></div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border-t-8" id="result-card">
+                    <h2 id="result-title" class="text-2xl font-bold text-center mb-4"></h2>
+                    <p id="result-desc" class="text-center text-gray-700 mb-6"></p>
+                    <div class="flex flex-col md:flex-row gap-4 mt-4">
+                        <button onclick="showFeedback('teen')" class="flex-1 bg-blue-100 text-blue-700 py-3 rounded-lg font-bold hover:bg-blue-200 transition"><i class="fas fa-user mr-2"></i> Soy Adolescente</button>
+                        <button onclick="showFeedback('parent')" class="flex-1 bg-green-100 text-green-700 py-3 rounded-lg font-bold hover:bg-green-200 transition"><i class="fas fa-user-friends mr-2"></i> Soy Padre/Tutor</button>
+                    </div>
+                    <div id="feedback-display" class="mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200 hidden"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================= PESTAÑA 5: TEST DE RIESGO ======================= -->
+    <div id="tab-test" class="hidden bg-gray-50 min-h-screen">
+        <div class="max-w-6xl mx-auto px-4 py-12">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-indigo-800 mb-2"><i class="fas fa-clipboard-list mr-2"></i> Test de Factores de Riesgo</h1>
+                <p class="text-gray-600">Identifica qué situaciones personales, familiares o sociales podrían ponerte en riesgo.</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border-l-8 border-indigo-500 max-w-4xl mx-auto">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Paso 1: ¿Quién eres?</h3>
+                <div class="flex space-x-4">
+                    <label class="flex-1 cursor-pointer">
+                        <input type="radio" name="role" value="student" class="peer sr-only" onchange="resetResults()">
+                        <div class="rounded-lg border-2 border-gray-200 p-4 text-center hover:bg-gray-50 peer-checked:border-indigo-600 peer-checked:bg-indigo-50 peer-checked:text-indigo-700 transition"><i class="fas fa-user-graduate text-3xl mb-2"></i><div class="font-bold">Soy Adolescente / Estudiante</div></div>
+                    </label>
+                    <label class="flex-1 cursor-pointer">
+                        <input type="radio" name="role" value="parent" class="peer sr-only" onchange="resetResults()">
+                        <div class="rounded-lg border-2 border-gray-200 p-4 text-center hover:bg-gray-50 peer-checked:border-indigo-600 peer-checked:bg-indigo-50 peer-checked:text-indigo-700 transition"><i class="fas fa-user-shield text-3xl mb-2"></i><div class="font-bold">Soy Padre / Tutor</div></div>
+                    </label>
+                </div>
+            </div>
+            <div id="test-form" class="opacity-50 pointer-events-none transition-opacity duration-300">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-teal-50 rounded-xl p-6 border border-teal-200">
+                        <h3 class="text-xl font-bold text-teal-800 mb-4 border-b-2 border-teal-200 pb-2">Ámbito Personal</h3>
+                        <div class="space-y-3 text-sm text-gray-700" id="personal-questions">
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-teal-600 focus:ring-teal-500 risk-check personal"> <span>Busco obtener rápido lo que deseo.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-teal-600 focus:ring-teal-500 risk-check personal"> <span>No sé lo que quiero hacer en un futuro.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-teal-600 focus:ring-teal-500 risk-check personal"> <span>No me interesa seguir reglas.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-teal-600 focus:ring-teal-500 risk-check personal"> <span>Me enojo cuando no me salen bien las cosas.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-teal-600 focus:ring-teal-500 risk-check personal"> <span>Se me complica decir "No".</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-teal-600 focus:ring-teal-500 risk-check personal"> <span>No controlo mi enojo / soy agresivo.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-teal-600 focus:ring-teal-500 risk-check personal"> <span>Pienso que las opiniones de otros importan más.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-teal-600 focus:ring-teal-500 risk-check personal"> <span>Tengo bajas calificaciones / Abandoné escuela.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-teal-600 focus:ring-teal-500 risk-check personal"> <span>Siempre estoy preocupado/a.</span></label>
+                        </div>
+                    </div>
+                    <div class="bg-pink-50 rounded-xl p-6 border border-pink-200">
+                        <h3 class="text-xl font-bold text-pink-800 mb-4 border-b-2 border-pink-200 pb-2">Ámbito Familiar</h3>
+                        <div class="space-y-3 text-sm text-gray-700" id="family-questions">
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-pink-600 focus:ring-pink-500 risk-check family"> <span>No confío en mi familia / No siento apoyo.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-pink-600 focus:ring-pink-500 risk-check family"> <span>No platicamos mucho en casa.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-pink-600 focus:ring-pink-500 risk-check family"> <span>No supervisan mis actividades.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-pink-600 focus:ring-pink-500 risk-check family"> <span>Me sobreprotegen demasiado.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-pink-600 focus:ring-pink-500 risk-check family"> <span>Hay problemas y violencia en casa.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-pink-600 focus:ring-pink-500 risk-check family"> <span>Consumen alcohol en mi familia.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-pink-600 focus:ring-pink-500 risk-check family"> <span>Estrés por problemas económicos o divorcio.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-pink-600 focus:ring-pink-500 risk-check family"> <span>Siento que mis padres me rechazan.</span></label>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-50 rounded-xl p-6 border border-yellow-200">
+                        <h3 class="text-xl font-bold text-yellow-800 mb-4 border-b-2 border-yellow-200 pb-2">Ámbito Social</h3>
+                        <div class="space-y-3 text-sm text-gray-700" id="social-questions">
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-yellow-600 focus:ring-yellow-500 risk-check social"> <span>Los vecinos no nos hablamos / no hay solidaridad.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-yellow-600 focus:ring-yellow-500 risk-check social"> <span>Mis amigos(as) beben alcohol.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-yellow-600 focus:ring-yellow-500 risk-check social"> <span>Poca promoción del deporte y cultura.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-yellow-600 focus:ring-yellow-500 risk-check social"> <span>Hay pocos espacios para recreación.</span></label>
+                            <label class="flex items-start space-x-2"><input type="checkbox" class="mt-1 rounded text-yellow-600 focus:ring-yellow-500 risk-check social"> <span>Falta de oportunidades (educación/empleo).</span></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 text-center">
+                    <button onclick="calculateRisk()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-10 rounded-full shadow-xl transform transition hover:scale-105 text-lg">
+                        <i class="fas fa-calculator mr-2"></i> Evaluar Mis Riesgos
+                    </button>
+                </div>
+            </div>
+            <div id="result-area" class="hidden mt-10 animate-fade-in-up">
+                <div class="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-4xl mx-auto">
+                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white text-center">
+                        <h3 class="text-2xl font-bold">Resultados de tu Evaluación</h3>
+                        <p id="result-header-text" class="opacity-90">Analizando tus respuestas...</p>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex items-center justify-center mb-6">
+                            <div class="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700 relative">
+                                <div id="risk-bar" class="bg-green-500 h-4 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                            </div>
+                            <span id="risk-score" class="ml-4 font-bold text-xl text-gray-700">0/22</span>
+                        </div>
+                        <div id="feedback-content" class="bg-indigo-50 p-6 rounded-xl border-l-4 border-indigo-500 text-gray-700"></div>
+                        <div class="mt-6 text-center">
+                             <p class="text-sm text-gray-500 italic mb-4">*Este test es orientativo y no sustituye una valoración profesional.</p>
+                             <button onclick="switchTab('guia')" class="text-indigo-600 font-bold hover:underline">Volver a la Guía para aprender a protegerme →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-6 text-center relative z-50">
+        <p class="text-sm">Basado en la Guía "La Neta del Alcohol"</p>
+        <p class="text-xs mt-1 text-gray-500">Autor: alberto.angeles.g@gmail.com | Tel: 7226540066</p>
+    </footer>
+
+    <script>
+        // Inicialización de Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({ startOnLoad: true, theme: 'default' });
+        });
+
+        // Marca de Agua
+        function createWatermark() {
+            const container = document.getElementById('watermark');
+            const text = "alberto.angeles.g@gmail.com | 7226540066";
+            const cols = Math.floor(window.innerWidth / 300);
+            const rows = Math.floor(window.innerHeight / 200);
+            const total = (cols + 1) * (rows + 1);
+            container.innerHTML = '';
+            for (let i = 0; i < total; i++) {
+                const div = document.createElement('div');
+                div.className = 'watermark-text';
+                div.innerText = text;
+                container.appendChild(div);
+            }
+        }
+
+        // Sistema de Pestañas
+        function switchTab(tabName) {
+            // Ocultar todo
+            document.getElementById('tab-guia').classList.add('hidden');
+            document.getElementById('tab-cuerpo').classList.add('hidden');
+            document.getElementById('tab-mujer').classList.add('hidden');
+            document.getElementById('tab-comunicacion').classList.add('hidden');
+            document.getElementById('tab-emociones').classList.add('hidden');
+            document.getElementById('tab-semaforo').classList.add('hidden');
+            document.getElementById('tab-consumo').classList.add('hidden');
+            document.getElementById('tab-test').classList.add('hidden');
+            
+            // Desactivar botones
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-indigo-50', 'text-indigo-700'));
+
+            // Mostrar seleccionado
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            document.getElementById('btn-' + tabName).classList.add('active', 'bg-indigo-50', 'text-indigo-700');
+        }
+
+        // Lógica de Acordeones
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            const isActive = content.classList.contains('active');
+            
+            if (!isActive) {
+                content.classList.add('active');
+                if(icon) {
+                    icon.classList.remove('fa-plus-circle');
+                    icon.classList.add('fa-minus-circle');
+                    icon.style.transform = "rotate(180deg)";
+                    icon.style.color = "#c026d3"; // Purple
+                }
+            } else {
+                content.classList.remove('active');
+                if(icon) {
+                    icon.classList.remove('fa-minus-circle');
+                    icon.classList.add('fa-plus-circle');
+                    icon.style.transform = "rotate(0deg)";
+                    icon.style.color = ""; // Reset
+                }
+            }
+        }
+
+        // Lógica del Cuerpo Humano
+        function showOrganInfo(organ, element) {
+            // Reset active visuals
+            document.querySelectorAll('.organ-hotspot').forEach(el => el.classList.remove('active-organ'));
+            if(element) element.classList.add('active-organ');
+
+            const title = document.getElementById('organ-title');
+            const content = document.getElementById('organ-content');
+            
+            let infoHtml = "";
+
+            if(organ === 'cerebro') {
+                title.innerHTML = `<i class="fas fa-brain mr-2 text-pink-500"></i> Cerebro`;
+                infoHtml = `<p class="font-bold text-pink-600">Inmediato:</p> Euforia falsa, pérdida de memoria (blackouts), mareos.<br><br>
+                            <p class="font-bold text-red-700">Largo Plazo:</p> Muerte de neuronas, depresión, ansiedad, adicción y demencia prematura.`;
+            } else if(organ === 'corazon') {
+                title.innerHTML = `<i class="fas fa-heartbeat mr-2 text-red-500"></i> Corazón`;
+                infoHtml = `<p class="font-bold text-pink-600">Inmediato:</p> Taquicardia (latidos rápidos), dilatación de vasos sanguíneos.<br><br>
+                            <p class="font-bold text-red-700">Largo Plazo:</p> Hipertensión (presión alta), insuficiencia cardíaca y riesgo de infarto.`;
+            } else if(organ === 'higado') {
+                title.innerHTML = `<i class="fas fa-filter mr-2 text-purple-500"></i> Hígado`;
+                infoHtml = `<p class="font-bold text-pink-600">Inmediato:</p> Sobrecarga de toxinas. Si bebes rápido, no puede procesarlo y te intoxicas.<br><br>
+                            <p class="font-bold text-red-700">Largo Plazo:</p> <strong>CIRROSIS</strong> (hígado cicatrizado que no funciona), hepatitis alcohólica y cáncer.`;
+            } else if(organ === 'estomago') {
+                title.innerHTML = `<i class="fas fa-utensils mr-2 text-orange-500"></i> Estómago y Páncreas`;
+                infoHtml = `<p class="font-bold text-pink-600">Inmediato:</p> Vómito, irritación, dolor abdominal.<br><br>
+                            <p class="font-bold text-red-700">Largo Plazo:</p> Gastritis crónica, úlceras sangrantes, inflamación del páncreas (pancreatitis) y desnutrición.`;
+            } else if(organ === 'sexual') {
+                title.innerHTML = `<i class="fas fa-venus-mars mr-2 text-blue-500"></i> Sistema Reproductivo`;
+                infoHtml = `<p class="font-bold text-pink-600">Inmediato:</p> Desinhibición pero <strong>menor desempeño</strong> sexual.<br><br>
+                            <p class="font-bold text-red-700">Largo Plazo:</p> Impotencia, infertilidad, alteraciones menstruales y disminución de espermatozoides.`;
+            }
+
+            content.innerHTML = infoHtml;
+        }
+
+        // Lógica del Detector de Abuso
+        function validateAbuse() {
+            const result = document.getElementById('abuse-result');
+            result.classList.remove('hidden');
+            document.querySelectorAll('.detector-check').forEach(check => {
+                if(!check.checked) check.parentElement.children[1].style.borderColor = "#fca5a5";
+            });
+        }
+
+        // Lógica del Test de Comunicación (NUEVO)
+        function calculateCommunication() {
+            const selected = document.querySelectorAll('.comm-check:checked');
+            if (selected.length === 0) { alert("Selecciona al menos una opción."); return; }
+
+            let counts = { pasivo: 0, agresivo: 0, asertivo: 0 };
+            selected.forEach(el => counts[el.value]++);
+
+            // Determinar estilo dominante
+            let maxVal = 0;
+            let style = "";
+            for (const [key, val] of Object.entries(counts)) {
+                if (val > maxVal) { maxVal = val; style = key; }
+            }
+
+            const resultDiv = document.getElementById('comm-result');
+            const title = document.getElementById('comm-title');
+            const desc = document.getElementById('comm-desc');
+            const teenAdvice = document.getElementById('comm-teen-advice');
+            const parentAdvice = document.getElementById('comm-parent-advice');
+
+            resultDiv.classList.remove('hidden');
+
+            if (style === 'pasivo') {
+                title.innerHTML = `<span class="text-pink-600">Estilo Predominante: PASIVO 😶</span>`;
+                desc.innerHTML = "Te cuesta expresar lo que sientes por miedo al rechazo. Priorizas a los demás sobre ti mismo.";
+                desc.className = "bg-pink-50 p-6 rounded-lg border-l-4 border-pink-500 mb-4";
+                teenAdvice.innerText = "¡Tu voz importa! No tienes que decir que sí a todo para tener amigos. Empieza con cosas pequeñas: opina sobre qué película ver o qué comer. Si no quieres beber, el 'No' es tu derecho.";
+                parentAdvice.innerText = "Su hijo/a puede ser vulnerable a la presión social. Fomente su autoestima y valide sus opiniones en casa. Enséñele que está bien no estar de acuerdo.";
+            } else if (style === 'agresivo') {
+                title.innerHTML = `<span class="text-yellow-600">Estilo Predominante: AGRESIVO 😠</span>`;
+                desc.innerHTML = "Crees que tu opinión es la única que vale. A veces impones o lastimas sin querer.";
+                desc.className = "bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500 mb-4";
+                teenAdvice.innerText = "Ser fuerte no significa imponerse. Escuchar a los demás te hará mejor líder. Antes de explotar, respira. El alcohol puede potenciar tu agresividad y meterte en problemas graves.";
+                parentAdvice.innerText = "Puede haber mucha frustración oculta. Evite responder con más agresión. Modele la calma y enséñele técnicas para manejar el enojo sin violencia.";
+            } else {
+                title.innerHTML = `<span class="text-green-600">Estilo Predominante: ASERTIVO 😌</span>`;
+                desc.innerHTML = "¡Felicidades! Sabes expresarte con respeto y claridad. Defiendes tus derechos sin dañar a otros.";
+                desc.className = "bg-green-50 p-6 rounded-lg border-l-4 border-green-500 mb-4";
+                teenAdvice.innerText = "Tienes la mejor herramienta contra las adicciones. Usa tu seguridad para decir 'No' al alcohol y para ayudar a amigos que no saben cómo defenderse.";
+                parentAdvice.innerText = "¡Gran trabajo! Su hijo/a tiene habilidades sociales sólidas. Sigan fomentando este diálogo abierto; es su mayor factor de protección.";
+            }
+        }
+
+        // Lógica del Test de Riesgo (Factores)
+        const roleInputs = document.querySelectorAll('input[name="role"]');
+        roleInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const form = document.getElementById('test-form');
+                form.classList.remove('opacity-50', 'pointer-events-none');
+                document.getElementById('result-area').classList.add('hidden'); 
+            });
+        });
+
+        function resetResults() {
+            document.getElementById('result-area').classList.add('hidden');
+            document.querySelectorAll('.risk-check').forEach(c => c.checked = false);
+        }
+
+        function calculateRisk() {
+            const role = document.querySelector('input[name="role"]:checked').value;
+            const personalChecks = document.querySelectorAll('.risk-check.personal:checked').length;
+            const familyChecks = document.querySelectorAll('.risk-check.family:checked').length;
+            const socialChecks = document.querySelectorAll('.risk-check.social:checked').length;
+            const totalChecks = personalChecks + familyChecks + socialChecks;
+            
+            const resultArea = document.getElementById('result-area');
+            const riskBar = document.getElementById('risk-bar');
+            const riskScore = document.getElementById('risk-score');
+            const feedbackContent = document.getElementById('feedback-content');
+            
+            resultArea.classList.remove('hidden');
+            
+            const percentage = Math.min((totalChecks / 12) * 100, 100); 
+            setTimeout(() => {
+                riskBar.style.width = percentage + '%';
+                if(totalChecks < 3) riskBar.className = "h-4 rounded-full transition-all duration-1000 bg-green-500";
+                else if(totalChecks < 7) riskBar.className = "h-4 rounded-full transition-all duration-1000 bg-yellow-400";
+                else riskBar.className = "h-4 rounded-full transition-all duration-1000 bg-red-500";
+            }, 100);
+            
+            riskScore.innerText = totalChecks + " factores detectados";
+
+            let html = "";
+            if (role === 'student') {
+                html += `<h4 class="text-xl font-bold mb-3 text-indigo-800">👨‍🎓 Hola, Estudiante:</h4>`;
+                if (totalChecks === 0) html += `<p>¡Excelente! Tienes un entorno muy seguro.</p>`;
+                else if (totalChecks <= 5) html += `<p>Has identificado algunos riesgos. <strong>Recuerda:</strong> No dejes que el entorno decida por ti.</p>`;
+                else html += `<p class="font-bold text-red-600">¡Atención!</p><p>Hay varios factores de presión. Busca apoyo en adultos de confianza.</p>`;
+                
+                if(familyChecks > 0) html += `<div class="mt-4 bg-pink-50 p-3 rounded border border-pink-200 text-sm"><i class="fas fa-home text-pink-500 mr-2"></i> <strong>Familia:</strong> Aunque haya problemas en casa, tu futuro es tuyo.</div>`;
+                if(socialChecks > 0) html += `<div class="mt-2 bg-yellow-50 p-3 rounded border border-yellow-200 text-sm"><i class="fas fa-users text-yellow-600 mr-2"></i> <strong>Social:</strong> Si tu barrio o amigos presionan, busca actividades en otros espacios.</div>`;
+            } else { 
+                html += `<h4 class="text-xl font-bold mb-3 text-indigo-800">👪 Estimado Padre/Tutor:</h4>`;
+                if (totalChecks === 0) html += `<p>¡Felicidades! Parece haber un entorno seguro.</p>`;
+                else if (totalChecks <= 5) html += `<p>Hay señales de alerta. <strong>Recuerda:</strong> La supervisión y el cariño son claves.</p>`;
+                else html += `<p class="font-bold text-red-600">¡Alerta de Riesgo!</p><p>El entorno presenta desafíos importantes. Su hijo(a) necesita apoyo.</p>`;
+
+                if(familyChecks > 0) html += `<div class="mt-4 bg-pink-50 p-3 rounded border border-pink-200 text-sm"><i class="fas fa-comments text-pink-500 mr-2"></i> <strong>Consejo Familiar:</strong> Los problemas de adultos afectan a los hijos.</div>`;
+                if(socialChecks > 0) html += `<div class="mt-2 bg-yellow-50 p-3 rounded border border-yellow-200 text-sm"><i class="fas fa-map-marked-alt text-yellow-600 mr-2"></i> <strong>Consejo Social:</strong> Busquen actividades extracurriculares fuera de la zona de riesgo.</div>`;
+            }
+            feedbackContent.innerHTML = html;
+            resultArea.scrollIntoView({behavior: 'smooth'});
+        }
+
+        // Lógica Test de Consumo
+        let currentScore = 0;
+        function calculateConsumption() {
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            const q3 = document.querySelector('input[name="q3"]:checked');
+
+            if (!q1 || !q2 || !q3) { alert("Por favor responde todas las preguntas."); return; }
+
+            const score = parseInt(q1.value) + parseInt(q2.value) + parseInt(q3.value);
+            currentScore = score;
+
+            document.querySelectorAll('.light').forEach(l => l.classList.remove('active'));
+            const resultSection = document.getElementById('consumption-result');
+            const resultCard = document.getElementById('result-card');
+            const title = document.getElementById('result-title');
+            const desc = document.getElementById('result-desc');
+            
+            resultSection.classList.remove('hidden');
+            document.getElementById('feedback-display').classList.add('hidden');
+
+            setTimeout(() => {
+                if (score >= 8) {
+                    document.getElementById('light-red').classList.add('active');
+                    resultCard.className = "bg-white p-6 rounded-xl shadow-lg border-t-8 border-red-500";
+                    title.innerText = "¡Detente! Te estás pasando (8+ pts)";
+                    title.className = "text-2xl font-bold text-center mb-4 text-red-600";
+                    desc.innerText = "Puede haber uso nocivo o adicción. Afecta tu salud y vida.";
+                } else if (score >= 4) {
+                    document.getElementById('light-yellow').classList.add('active');
+                    resultCard.className = "bg-white p-6 rounded-xl shadow-lg border-t-8 border-yellow-400";
+                    title.innerText = "¡Aguas! Estás en riesgo (4-7 pts)";
+                    title.className = "text-2xl font-bold text-center mb-4 text-yellow-600";
+                    desc.innerText = "Reflexiona sobre tu consumo. Estás cerca de tener problemas serios.";
+                } else {
+                    document.getElementById('light-green').classList.add('active');
+                    resultCard.className = "bg-white p-6 rounded-xl shadow-lg border-t-8 border-green-500";
+                    title.innerText = "Bajo Riesgo (0-3 pts)";
+                    title.className = "text-2xl font-bold text-center mb-4 text-green-600";
+                    desc.innerText = score === 0 ? "¡Muy bien! Sigue sin consumir." : "Eres consumidor de bajo riesgo.";
+                }
+                resultSection.scrollIntoView({behavior: 'smooth'});
+            }, 300);
+        }
+
+        function showFeedback(type) {
+            const container = document.getElementById('feedback-display');
+            container.classList.remove('hidden');
+            let html = "";
+            if (type === 'teen') {
+                html += `<h4 class="font-bold text-lg mb-2 text-blue-800">👦 Para ti, Adolescente:</h4>`;
+                if (currentScore >= 8) html += `<p>Tu cerebro está en peligro real. Pide ayuda YA.</p>`;
+                else if (currentScore >= 4) html += `<p>Cuidado. Estás jugando con fuego. Bájale antes de que sea tarde.</p>`;
+                else html += `<p>¡Vas bien! Si no bebes, sigue así. Si bebes poco, mantén el control.</p>`;
+            } else {
+                html += `<h4 class="font-bold text-lg mb-2 text-green-800">👨‍👩‍👧 Para Padres/Tutores:</h4>`;
+                if (currentScore >= 8) html += `<p><strong>Alerta Roja:</strong> Su hijo(a) necesita intervención profesional (CIJ).</p>`;
+                else if (currentScore >= 4) html += `<p><strong>Atención:</strong> Hay conductas de riesgo. Poner límites y supervisar.</p>`;
+                else html += `<p><strong>Prevención:</strong> No baje la guardia. Mantenga la comunicación.</p>`;
+            }
+            container.innerHTML = html;
+        }
+
+        window.onload = function() {
+            createWatermark();
+            switchTab('guia');
+        };
+        window.onresize = createWatermark;
+    </script>
 </body>
 </html>
