@@ -231,6 +231,15 @@
             margin-left: auto;
             text-align: right;
         }
+        
+        /* Estilos para Tarjetas de Técnicas */
+        .technique-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .technique-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body class="text-gray-800" oncontextmenu="return false;">
@@ -708,65 +717,29 @@
 
             </div>
 
-            <!-- Test de Comunicación (NUEVO) -->
-            <div class="bg-white rounded-xl shadow-lg p-8 border-l-8 border-blue-500">
+            <!-- Test de Comunicación -->
+            <div class="bg-white rounded-xl shadow-lg p-8 border-l-8 border-blue-500 mb-12">
                 <h3 class="text-2xl font-bold text-blue-800 mb-4"><i class="fas fa-tasks mr-2"></i> Test: ¿Cuál es tu estilo de comunicación?</h3>
                 <p class="text-gray-600 mb-6">Selecciona las frases con las que te identificas más:</p>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" id="comm-test-questions">
                     <!-- Pasivo -->
-                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
-                        <input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="pasivo">
-                        <span class="ml-3 text-gray-700">Trato de decir cosas que les gustan a los demás.</span>
-                    </label>
-                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
-                        <input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="pasivo">
-                        <span class="ml-3 text-gray-700">Evito contradecir aunque no esté de acuerdo.</span>
-                    </label>
-                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
-                        <input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="pasivo">
-                        <span class="ml-3 text-gray-700">Me da pena decir lo que siento o dudar.</span>
-                    </label>
-                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
-                        <input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="pasivo">
-                        <span class="ml-3 text-gray-700">Hago lo posible para agradarle a todo el mundo.</span>
-                    </label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="pasivo"><span class="ml-3 text-gray-700">Trato de decir cosas que les gustan a los demás.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="pasivo"><span class="ml-3 text-gray-700">Evito contradecir aunque no esté de acuerdo.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="pasivo"><span class="ml-3 text-gray-700">Me da pena decir lo que siento o dudar.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="pasivo"><span class="ml-3 text-gray-700">Hago lo posible para agradarle a todo el mundo.</span></label>
 
                     <!-- Agresivo -->
-                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
-                        <input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="agresivo">
-                        <span class="ml-3 text-gray-700">Me gusta que hagan lo que digo, aunque no quieran.</span>
-                    </label>
-                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
-                        <input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="agresivo">
-                        <span class="ml-3 text-gray-700">Me río de los errores de mis amistades.</span>
-                    </label>
-                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
-                        <input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="agresivo">
-                        <span class="ml-3 text-gray-700">Me enoja que me digan que fallé y contesto mal.</span>
-                    </label>
-                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
-                        <input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="agresivo">
-                        <span class="ml-3 text-gray-700">Hago lo posible por tener poder sobre los demás.</span>
-                    </label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="agresivo"><span class="ml-3 text-gray-700">Me gusta que hagan lo que digo, aunque no quieran.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="agresivo"><span class="ml-3 text-gray-700">Me río de los errores de mis amistades.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="agresivo"><span class="ml-3 text-gray-700">Me enoja que me digan que fallé y contesto mal.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="agresivo"><span class="ml-3 text-gray-700">Hago lo posible por tener poder sobre los demás.</span></label>
 
                     <!-- Asertivo -->
-                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
-                        <input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="asertivo">
-                        <span class="ml-3 text-gray-700">Expreso mis pensamientos de forma directa y clara.</span>
-                    </label>
-                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
-                        <input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="asertivo">
-                        <span class="ml-3 text-gray-700">Le digo a mis amigos lo que me gusta de ellos.</span>
-                    </label>
-                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
-                        <input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="asertivo">
-                        <span class="ml-3 text-gray-700">Hablo bien de mí, sin presumir.</span>
-                    </label>
-                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
-                        <input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="asertivo">
-                        <span class="ml-3 text-gray-700">Acepto y respeto errores de los demás.</span>
-                    </label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="asertivo"><span class="ml-3 text-gray-700">Expreso mis pensamientos de forma directa y clara.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="asertivo"><span class="ml-3 text-gray-700">Le digo a mis amigos lo que me gusta de ellos.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="asertivo"><span class="ml-3 text-gray-700">Hablo bien de mí, sin presumir.</span></label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"><input type="checkbox" class="comm-check w-5 h-5 text-blue-600" value="asertivo"><span class="ml-3 text-gray-700">Acepto y respeto errores de los demás.</span></label>
                 </div>
 
                 <button onclick="calculateCommunication()" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-md hover:bg-blue-700 transition transform hover:scale-105">
@@ -791,31 +764,29 @@
                 </div>
             </div>
             
-            <!-- Diagrama de Flujo: Cómo Decir "NO" Asertivamente -->
-            <div class="mt-12 bg-white rounded-xl shadow-lg p-8 border-t-8 border-purple-500">
+            <!-- Diagrama de Flujo -->
+            <div class="mt-12 bg-white rounded-xl shadow-lg p-8 border-t-8 border-purple-500 mb-12">
                 <h3 class="text-2xl font-bold text-purple-800 mb-6 text-center">
                     <i class="fas fa-shield-alt mr-2"></i> Diagrama: ¿Cómo decir "NO" a la presión social?
                 </h3>
-                <p class="text-gray-600 mb-6 text-center">Sigue este camino para rechazar una invitación a beber de forma asertiva.</p>
-                
                 <div class="mermaid flex justify-center">
                     graph TD
-                        A[Inicio: Recibes presión para beber alcohol] --> B{¿Quieres beber?};
-                        B -- Sí (Si eres adulto) --> C[Aceptas responsablemente];
-                        B -- No (Eres menor o no quieres) --> D[Eliges rechazar la invitación];
-                        D --> E{Elige tu Técnica Asertiva};
-                        E -- Directa --> F["Di con firmeza: 'No quiero' o 'No me interesa'"];
-                        E -- Niebla --> G["Da una excusa: 'Mis padres se darán cuenta'"];
-                        E -- Disco Rayado --> H["Repite tu negativa: 'No, gracias', 'Te dije que no'"];
-                        E -- Interrogación --> I["Pregunta de vuelta: '¿Qué tiene de raro no beber?'"];
-                        E -- Resuelve --> J["Acepta la crítica: 'Puede que sea aburrido, pero no quiero'"];
-                        F --> K[Mantén tu postura con calma];
-                        G --> K;
-                        H --> K;
-                        I --> K;
-                        J --> K;
-                        K --> L[Fin: Te mantienes firme sin beber];
-                        
+                        A["Inicio: Presión para beber"] --> B{"¿Quieres beber?"}
+                        B -->|Sí (Adulto)| C["Acepta responsablemente"]
+                        B -->|No (Menor/No quieres)| D["Rechazar invitación"]
+                        D --> E{"Elige Técnica"}
+                        E -->|Directa| F["Di: 'No quiero'"]
+                        E -->|Niebla| G["Excusa: 'Mis padres sabrán'"]
+                        E -->|Disco Rayado| H["Repite: 'No, gracias'"]
+                        E -->|Interrogación| I["Pregunta: '¿Por qué te importa?'"]
+                        E -->|Resuelve| J["Acepta crítica: 'Quizás, pero no quiero'"]
+                        F --> K["Mantén la calma"]
+                        G --> K
+                        H --> K
+                        I --> K
+                        J --> K
+                        K --> L["Fin: Te mantienes firme"]
+
                         style A fill:#f3e8ff,stroke:#a855f7,stroke-width:2px,color:#6b21a8
                         style B fill:#fef08a,stroke:#eab308,stroke-width:2px,color:#854d0e
                         style C fill:#d1fae5,stroke:#10b981,stroke-width:2px,color:#065f46,stroke-dasharray: 5 5
@@ -828,6 +799,85 @@
                         style J fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e40af
                         style K fill:#f3e8ff,stroke:#a855f7,stroke-width:2px,color:#6b21a8
                         style L fill:#d1fae5,stroke:#10b981,stroke-width:2px,color:#065f46
+                </div>
+            </div>
+
+            <!-- NUEVA SECCIÓN: APRENDE A DECIR ¡NO! -->
+            <div class="bg-pink-50 rounded-xl p-8 border-l-8 border-pink-500">
+                <h3 class="text-2xl font-bold text-pink-800 mb-6 text-center">8.1 ¡Aprendo a decir ¡NO!</h3>
+                <p class="text-center text-gray-700 mb-8 max-w-3xl mx-auto">
+                    Algunas veces te puedes sentir presionado(a) por compañeros(as), pero decir NO es tu derecho. 
+                    Nadie puede forzarte a hacer lo que no quieres. ¡Aquí tienes las técnicas para defenderte!
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Técnica 1: Directa -->
+                    <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-pink-400">
+                        <h4 class="font-bold text-pink-600 text-lg mb-2">🛑 Técnica Directa</h4>
+                        <div class="text-sm text-gray-600 mb-4">
+                            Mira a los ojos, pon cara seria y di frases cortas y claras.
+                        </div>
+                        <div class="bg-pink-50 p-3 rounded text-pink-800 font-bold text-center text-sm">
+                            "No quiero"<br>"No me interesa"<br>"No lo necesito"
+                        </div>
+                    </div>
+
+                    <!-- Técnica 2: Disco Rayado -->
+                    <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-yellow-400">
+                        <h4 class="font-bold text-yellow-600 text-lg mb-2">💿 Disco Rayado</h4>
+                        <div class="text-sm text-gray-600 mb-4">
+                            Repite tu negativa una y otra vez, con calma, sin dar explicaciones extra.
+                        </div>
+                        <div class="bg-yellow-50 p-3 rounded text-yellow-800 font-bold text-center text-sm">
+                            "No, gracias"<br>"Te dije que no"<br>"Entiendo, pero no quiero"
+                        </div>
+                    </div>
+
+                    <!-- Técnica 3: Banco de Niebla -->
+                    <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-400">
+                        <h4 class="font-bold text-blue-600 text-lg mb-2">☁️ Banco de Niebla</h4>
+                        <div class="text-sm text-gray-600 mb-4">
+                            Pon una excusa externa o da la razón parcialmente sin ceder.
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded text-blue-800 font-bold text-center text-sm">
+                            "No voy a tomar porque mis papás se darán cuenta y me irá mal"
+                        </div>
+                    </div>
+
+                    <!-- Técnica 4: Tregua -->
+                    <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-green-400">
+                        <h4 class="font-bold text-green-600 text-lg mb-2">🤝 La Tregua</h4>
+                        <div class="text-sm text-gray-600 mb-4">
+                            Haz un trato: tú respetas que ellos beban, ellos respetan que tú no.
+                        </div>
+                        <div class="bg-green-50 p-3 rounded text-green-800 font-bold text-center text-sm">
+                            "Yo no te digo nada de tu forma de beber, así que tú no insistas en que tome"
+                        </div>
+                    </div>
+
+                    <!-- Técnica 5: Resuelve -->
+                    <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-400">
+                        <h4 class="font-bold text-purple-600 text-lg mb-2">🧠 Resuelve</h4>
+                        <div class="text-sm text-gray-600 mb-4">
+                            Enfrenta la crítica aceptando que pueden pensar diferente, pero manteniendo tu decisión.
+                        </div>
+                        <div class="bg-purple-50 p-3 rounded text-purple-800 font-bold text-center text-sm">
+                            "Puede que te parezca miedoso, pero he decidido no hacerlo"
+                        </div>
+                    </div>
+
+                    <!-- Técnica 6: Interrogación -->
+                    <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-orange-400">
+                        <h4 class="font-bold text-orange-600 text-lg mb-2">❓ Interrogación</h4>
+                        <div class="text-sm text-gray-600 mb-4">
+                            Devuelve la presión con una pregunta que los haga pensar.
+                        </div>
+                        <div class="bg-orange-50 p-3 rounded text-orange-800 font-bold text-center text-sm">
+                            "¿Y qué tiene de raro que no quiera beber alcohol?"
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -1405,51 +1455,6 @@
             }
             feedbackContent.innerHTML = html;
             resultArea.scrollIntoView({behavior: 'smooth'});
-        }
-
-        // Lógica Test de Consumo
-        let currentScore = 0;
-        function calculateConsumption() {
-            const q1 = document.querySelector('input[name="q1"]:checked');
-            const q2 = document.querySelector('input[name="q2"]:checked');
-            const q3 = document.querySelector('input[name="q3"]:checked');
-
-            if (!q1 || !q2 || !q3) { alert("Por favor responde todas las preguntas."); return; }
-
-            const score = parseInt(q1.value) + parseInt(q2.value) + parseInt(q3.value);
-            currentScore = score;
-
-            document.querySelectorAll('.light').forEach(l => l.classList.remove('active'));
-            const resultSection = document.getElementById('consumption-result');
-            const resultCard = document.getElementById('result-card');
-            const title = document.getElementById('result-title');
-            const desc = document.getElementById('result-desc');
-            
-            resultSection.classList.remove('hidden');
-            document.getElementById('feedback-display').classList.add('hidden');
-
-            setTimeout(() => {
-                if (score >= 8) {
-                    document.getElementById('light-red').classList.add('active');
-                    resultCard.className = "bg-white p-6 rounded-xl shadow-lg border-t-8 border-red-500";
-                    title.innerText = "¡Detente! Te estás pasando (8+ pts)";
-                    title.className = "text-2xl font-bold text-center mb-4 text-red-600";
-                    desc.innerText = "Puede haber uso nocivo o adicción. Afecta tu salud y vida.";
-                } else if (score >= 4) {
-                    document.getElementById('light-yellow').classList.add('active');
-                    resultCard.className = "bg-white p-6 rounded-xl shadow-lg border-t-8 border-yellow-400";
-                    title.innerText = "¡Aguas! Estás en riesgo (4-7 pts)";
-                    title.className = "text-2xl font-bold text-center mb-4 text-yellow-600";
-                    desc.innerText = "Reflexiona sobre tu consumo. Estás cerca de tener problemas serios.";
-                } else {
-                    document.getElementById('light-green').classList.add('active');
-                    resultCard.className = "bg-white p-6 rounded-xl shadow-lg border-t-8 border-green-500";
-                    title.innerText = "Bajo Riesgo (0-3 pts)";
-                    title.className = "text-2xl font-bold text-center mb-4 text-green-600";
-                    desc.innerText = score === 0 ? "¡Muy bien! Sigue sin consumir." : "Eres consumidor de bajo riesgo.";
-                }
-                resultSection.scrollIntoView({behavior: 'smooth'});
-            }, 300);
         }
 
         function showFeedback(type) {
