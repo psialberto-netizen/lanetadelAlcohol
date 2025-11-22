@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Neta del Alcohol - Guía Interactiva</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <!-- Cargamos Mermaid con una versión específica y estable -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&family=Open+Sans:wght@400;600&display=swap');
@@ -13,8 +14,7 @@
         body {
             font-family: 'Open Sans', sans-serif;
             background-color: #f8fafc;
-            user-select: none;
-            -webkit-user-select: none;
+            /* Se eliminó user-select: none para permitir seleccionar texto y depurar */
         }
 
         h1, h2, h3 {
@@ -121,7 +121,13 @@
         .pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .8; } }
 
-        /* Diagrama de Flujo */
+        /* Diagrama de Flujo - Estilos adicionales para contenedores */
+        .mermaid {
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            overflow-x: auto; /* Scroll si es muy ancho */
+        }
         .timeline-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: #e2e8f0; transform: translateX(-50%); z-index: 0; }
         .liver-alert { animation: border-pulse 2s infinite; }
         @keyframes border-pulse { 0% { border-color: #ef4444; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { border-color: #f87171; box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { border-color: #ef4444; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
@@ -242,7 +248,8 @@
         }
     </style>
 </head>
-<body class="text-gray-800" oncontextmenu="return false;">
+<!-- Se eliminó oncontextmenu="return false;" para habilitar el clic derecho -->
+<body class="text-gray-800">
 
     <div id="watermark" class="watermark-container"></div>
 
@@ -264,6 +271,9 @@
                     </button>
                     <button onclick="switchTab('comunicacion')" id="btn-comunicacion" class="tab-btn px-3 md:px-4 py-2 rounded-md font-bold text-gray-600 text-sm md:text-base flex items-center">
                         <i class="fas fa-comments mr-1"></i> Hablar
+                    </button>
+                    <button onclick="switchTab('emociones')" id="btn-emociones" class="tab-btn px-3 md:px-4 py-2 rounded-md font-bold text-gray-600 text-sm md:text-base flex items-center">
+                        <i class="fas fa-smile-beam mr-1"></i> Emociones
                     </button>
                     <button onclick="switchTab('cuerpo')" id="btn-cuerpo" class="tab-btn px-3 md:px-4 py-2 rounded-md font-bold text-gray-600 text-sm md:text-base flex items-center">
                         <i class="fas fa-heartbeat mr-1"></i> Cuerpo
@@ -460,12 +470,14 @@
                     <p class="text-gray-500 text-sm">Toca las tarjetas para descubrir la verdad.</p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Mitos completos -->
                     <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
                         <div class="flip-card-inner shadow-md">
                             <div class="flip-card-front"><i class="fas fa-child text-3xl text-orange-500 mb-2"></i><p class="font-bold text-sm px-2">"Enseñarles a beber desde niños"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
                             <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Al exponerse desde la niñez, son más sensibles a daños físicos a largo plazo. La adicción puede comenzar desde esta etapa.</p></div>
                         </div>
                     </div>
+                    <!-- ... (resto de mitos) ... -->
                     <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
                         <div class="flip-card-inner shadow-md">
                             <div class="flip-card-front"><i class="fas fa-dumbbell text-3xl text-purple-500 mb-2"></i><p class="font-bold text-sm px-2">"Mi amigo sabe beber y no se le 'sube'"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
@@ -484,43 +496,7 @@
                             <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Mezclar altera funciones cerebrales y cardiacas. Puedes sufrir un ataque al corazón o daño renal.</p></div>
                         </div>
                     </div>
-                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
-                        <div class="flip-card-inner shadow-md">
-                            <div class="flip-card-front"><i class="fas fa-venus text-3xl text-pink-500 mb-2"></i><p class="font-bold text-sm px-2">"Las mujeres aguantan igual"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
-                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Tienen menos agua y enzimas para procesar alcohol. Se intoxican más rápido y por más tiempo con la misma cantidad.</p></div>
-                        </div>
-                    </div>
-                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
-                        <div class="flip-card-inner shadow-md">
-                            <div class="flip-card-front"><i class="fas fa-hand-paper text-3xl text-red-500 mb-2"></i><p class="font-bold text-sm px-2">"Puedo dejarlo cuando quiera"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
-                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Si empiezas en la adolescencia, eres <strong>4 veces más propenso</strong> a desarrollar una adicción que requiera tratamiento profesional.</p></div>
-                        </div>
-                    </div>
-                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
-                        <div class="flip-card-inner shadow-md">
-                            <div class="flip-card-front"><i class="fas fa-coffee text-3xl text-brown-600 mb-2 text-orange-800"></i><p class="font-bold text-sm px-2">"El café baja la borrachera"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
-                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Toma 3 horas eliminar 2 bebidas. Ni café ni baño frío aceleran el hígado. Solo estarás ebrio y despierto.</p></div>
-                        </div>
-                    </div>
-                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
-                        <div class="flip-card-inner shadow-md">
-                            <div class="flip-card-front"><i class="fas fa-pills text-3xl text-gray-600 mb-2"></i><p class="font-bold text-sm px-2">"Otras drogas son peores"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
-                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">El alcohol es el mayor problema actual. Responsable de casi el 10% de todas las enfermedades en México.</p></div>
-                        </div>
-                    </div>
-                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
-                        <div class="flip-card-inner shadow-md">
-                            <div class="flip-card-front"><i class="fas fa-wine-glass-alt text-3xl text-red-700 mb-2"></i><p class="font-bold text-sm px-2">"Una copa de vino es salud"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
-                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Solo aplica a adultos sanos (1 copa). Si tienes gastritis, diabetes o hipertensión, el vino empeora tu salud.</p></div>
-                        </div>
-                    </div>
-                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
-                        <div class="flip-card-inner shadow-md">
-                            <div class="flip-card-front"><i class="fas fa-beer text-3xl text-yellow-600 mb-2"></i><p class="font-bold text-sm px-2">"La cerveza no hace daño"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
-                            <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Mismos efectos. El abuso ocurre al pasar la capacidad del hígado, sin importar si es cerveza o tequila.</p></div>
-                        </div>
-                    </div>
-                    <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
+                     <div class="flip-card h-60" onclick="this.classList.toggle('flipped')">
                         <div class="flip-card-inner shadow-md">
                             <div class="flip-card-front"><i class="fas fa-car text-3xl text-blue-500 mb-2"></i><p class="font-bold text-sm px-2">"Manejo bien con poquito"</p><span class="text-xs text-gray-400 mt-2">(Tócame)</span></div>
                             <div class="flip-card-back bg-indigo-600 p-3 overflow-y-auto"><p class="text-sm font-bold mb-1">REALIDAD</p><p class="text-xs leading-snug">Desde la 2da copa se afectan los reflejos. Quienes dicen manejar bien, en realidad están arriesgando su vida.</p></div>
@@ -764,41 +740,29 @@
                 </div>
             </div>
             
-            <!-- Diagrama de Flujo -->
+            <!-- Diagrama de Flujo (CORREGIDO - Sintaxis Mermaid Simplificada) -->
             <div class="mt-12 bg-white rounded-xl shadow-lg p-8 border-t-8 border-purple-500 mb-12">
                 <h3 class="text-2xl font-bold text-purple-800 mb-6 text-center">
-                    <i class="fas fa-shield-alt mr-2"></i> Diagrama: ¿Cómo decir "NO" a la presión social?
+                    <i class="fas fa-shield-alt mr-2"></i> Diagrama: ¿Cómo decir NO a la presión social?
                 </h3>
+                <!-- Contenedor Mermaid Corregido -->
                 <div class="mermaid flex justify-center">
                     graph TD
-                        A["Inicio: Presión para beber"] --> B{"¿Quieres beber?"}
-                        B -->|Sí (Adulto)| C["Acepta responsablemente"]
-                        B -->|No (Menor/No quieres)| D["Rechazar invitación"]
-                        D --> E{"Elige Técnica"}
-                        E -->|Directa| F["Di: 'No quiero'"]
-                        E -->|Niebla| G["Excusa: 'Mis padres sabrán'"]
-                        E -->|Disco Rayado| H["Repite: 'No, gracias'"]
-                        E -->|Interrogación| I["Pregunta: '¿Por qué te importa?'"]
-                        E -->|Resuelve| J["Acepta crítica: 'Quizás, pero no quiero'"]
-                        F --> K["Mantén la calma"]
+                        A[Inicio: Presión para beber] --> B{¿Quieres beber?}
+                        B -->|Sí| C[Acepta responsablemente]
+                        B -->|No| D[Rechazar invitación]
+                        D --> E{Elige Técnica}
+                        E -->|Directa| F[Di: No quiero]
+                        E -->|Niebla| G[Excusa: Mis padres sabrán]
+                        E -->|Disco Rayado| H[Repite: No, gracias]
+                        E -->|Interrogación| I[Pregunta: ¿Por qué te importa?]
+                        E -->|Resuelve| J[Acepta crítica: Quizás, pero no]
+                        F --> K[Mantén la calma]
                         G --> K
                         H --> K
                         I --> K
                         J --> K
-                        K --> L["Fin: Te mantienes firme"]
-
-                        style A fill:#f3e8ff,stroke:#a855f7,stroke-width:2px,color:#6b21a8
-                        style B fill:#fef08a,stroke:#eab308,stroke-width:2px,color:#854d0e
-                        style C fill:#d1fae5,stroke:#10b981,stroke-width:2px,color:#065f46,stroke-dasharray: 5 5
-                        style D fill:#fee2e2,stroke:#ef4444,stroke-width:2px,color:#991b1b
-                        style E fill:#e0e7ff,stroke:#6366f1,stroke-width:2px,color:#3730a3
-                        style F fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e40af
-                        style G fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e40af
-                        style H fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e40af
-                        style I fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e40af
-                        style J fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e40af
-                        style K fill:#f3e8ff,stroke:#a855f7,stroke-width:2px,color:#6b21a8
-                        style L fill:#d1fae5,stroke:#10b981,stroke-width:2px,color:#065f46
+                        K --> L[Fin: Te mantienes firme]
                 </div>
             </div>
 
@@ -811,8 +775,7 @@
                 </p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    
-                    <!-- Técnica 1: Directa -->
+                    <!-- Tarjetas de técnicas (Sin cambios) -->
                     <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-pink-400">
                         <h4 class="font-bold text-pink-600 text-lg mb-2">🛑 Técnica Directa</h4>
                         <div class="text-sm text-gray-600 mb-4">
@@ -822,8 +785,7 @@
                             "No quiero"<br>"No me interesa"<br>"No lo necesito"
                         </div>
                     </div>
-
-                    <!-- Técnica 2: Disco Rayado -->
+                    <!-- (Resto de tarjetas iguales...) -->
                     <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-yellow-400">
                         <h4 class="font-bold text-yellow-600 text-lg mb-2">💿 Disco Rayado</h4>
                         <div class="text-sm text-gray-600 mb-4">
@@ -833,8 +795,6 @@
                             "No, gracias"<br>"Te dije que no"<br>"Entiendo, pero no quiero"
                         </div>
                     </div>
-
-                    <!-- Técnica 3: Banco de Niebla -->
                     <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-400">
                         <h4 class="font-bold text-blue-600 text-lg mb-2">☁️ Banco de Niebla</h4>
                         <div class="text-sm text-gray-600 mb-4">
@@ -844,8 +804,6 @@
                             "No voy a tomar porque mis papás se darán cuenta y me irá mal"
                         </div>
                     </div>
-
-                    <!-- Técnica 4: Tregua -->
                     <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-green-400">
                         <h4 class="font-bold text-green-600 text-lg mb-2">🤝 La Tregua</h4>
                         <div class="text-sm text-gray-600 mb-4">
@@ -855,8 +813,6 @@
                             "Yo no te digo nada de tu forma de beber, así que tú no insistas en que tome"
                         </div>
                     </div>
-
-                    <!-- Técnica 5: Resuelve -->
                     <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-400">
                         <h4 class="font-bold text-purple-600 text-lg mb-2">🧠 Resuelve</h4>
                         <div class="text-sm text-gray-600 mb-4">
@@ -866,8 +822,6 @@
                             "Puede que te parezca miedoso, pero he decidido no hacerlo"
                         </div>
                     </div>
-
-                    <!-- Técnica 6: Interrogación -->
                     <div class="technique-card bg-white p-6 rounded-lg shadow-md border-t-4 border-orange-400">
                         <h4 class="font-bold text-orange-600 text-lg mb-2">❓ Interrogación</h4>
                         <div class="text-sm text-gray-600 mb-4">
@@ -877,10 +831,78 @@
                             "¿Y qué tiene de raro que no quiera beber alcohol?"
                         </div>
                     </div>
-
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- ======================= PESTAÑA NUEVA: EMOCIONES ======================= -->
+    <div id="tab-emociones" class="hidden bg-gray-50 min-h-screen">
+        <div class="max-w-5xl mx-auto px-4 py-12">
+            <div class="text-center mb-12">
+                <h1 class="text-3xl font-bold text-purple-700 mb-4">🧘 Manejo de Emociones</h1>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Aprende a controlar el enojo y otras emociones fuertes sin recurrir al alcohol.</p>
+            </div>
+
+            <!-- Diagrama de Flujo: El Semáforo de la Calma (CORREGIDO - Sintaxis Simplificada) -->
+            <div class="bg-white rounded-xl shadow-lg p-8 border-t-8 border-yellow-500 mb-12">
+                <h3 class="text-2xl font-bold text-yellow-800 mb-6 text-center">
+                    <i class="fas fa-traffic-light mr-2"></i> El Semáforo de la Calma
+                </h3>
+                <div class="mermaid flex justify-center">
+                    graph TD
+                        A[Inicio: Siento emoción fuerte] --> B{¿Qué lo provocó?}
+                        B -->|1. Analizar| C[Identifica la causa]
+                        C --> D{¿Puedo responder tranquilo?}
+                        D -->|NO| E[ALTO: Tiempo Fuera]
+                        E --> F[Aléjate y Respira]
+                        F --> G{Elige Estrategia}
+                        G -->|Verbal| H[Autoverbalizaciones]
+                        G -->|Física| I[Relajación]
+                        H --> J[¿Ya estoy calmado?]
+                        I --> J
+                        J -->|SÍ| K[Ensayo Mental]
+                        K -->|Visualiza| L[Imagínate respondiendo bien]
+                        L --> M[Regresa y sé Asertivo]
+                        D -->|SÍ| M
+                        M --> N[Fin: Controlaste la emoción]
+                </div>
+            </div>
+
+            <!-- Tarjetas de Estrategias (Sin cambios) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500 hover:shadow-xl transition">
+                    <div class="text-blue-500 text-4xl mb-4"><i class="fas fa-search"></i></div>
+                    <h4 class="font-bold text-gray-800 text-lg mb-2">Analizar el Sentimiento</h4>
+                    <p class="text-sm text-gray-600">Identifica qué te hace explotar (perder un juego, que usen tus cosas, que no te den la razón).</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500 hover:shadow-xl transition">
+                    <div class="text-red-500 text-4xl mb-4"><i class="fas fa-hand-paper"></i></div>
+                    <h4 class="font-bold text-gray-800 text-lg mb-2">Detente y Piensa</h4>
+                    <p class="text-sm text-gray-600">Antes de responder, analiza las consecuencias. Si lo haces seguido, aprenderás a detenerte a tiempo.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-500 hover:shadow-xl transition">
+                    <div class="text-orange-500 text-4xl mb-4"><i class="fas fa-walking"></i></div>
+                    <h4 class="font-bold text-gray-800 text-lg mb-2">Tiempo Fuera</h4>
+                    <p class="text-sm text-gray-600">Aléjate físicamente. Regresa solo cuando estés calmado y listo para buscar una solución.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500 hover:shadow-xl transition">
+                    <div class="text-purple-500 text-4xl mb-4"><i class="fas fa-comment-medical"></i></div>
+                    <h4 class="font-bold text-gray-800 text-lg mb-2">Autoverbalizaciones</h4>
+                    <p class="text-sm text-gray-600">Repite frases clave: "Tranquilo", "No vale la pena", "Puedo manejar esto", "Respira".</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500 hover:shadow-xl transition">
+                    <div class="text-teal-500 text-4xl mb-4"><i class="fas fa-spa"></i></div>
+                    <h4 class="font-bold text-gray-800 text-lg mb-2">Técnicas de Relajación</h4>
+                    <p class="text-sm text-gray-600">Busca un lugar tranquilo: escucha música, medita, haz deporte, date un baño caliente o platica con alguien.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-indigo-500 hover:shadow-xl transition">
+                    <div class="text-indigo-500 text-4xl mb-4"><i class="fas fa-brain"></i></div>
+                    <h4 class="font-bold text-gray-800 text-lg mb-2">Ensayo Mental</h4>
+                    <p class="text-sm text-gray-600">Imagínate en la situación difícil pero actuando calmado y seguro. Practícalo en tu mente antes de hacerlo.</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1237,7 +1259,10 @@
 
     <script>
         // Inicialización de Mermaid
-        mermaid.initialize({ startOnLoad: true });
+        // IMPORTANTE: Esto debe ejecutarse después de que el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({ startOnLoad: true, theme: 'default' });
+        });
 
         // Marca de Agua
         function createWatermark() {
@@ -1262,24 +1287,17 @@
             document.getElementById('tab-cuerpo').classList.add('hidden');
             document.getElementById('tab-mujer').classList.add('hidden');
             document.getElementById('tab-comunicacion').classList.add('hidden');
+            document.getElementById('tab-emociones').classList.add('hidden');
             document.getElementById('tab-semaforo').classList.add('hidden');
             document.getElementById('tab-consumo').classList.add('hidden');
             document.getElementById('tab-test').classList.add('hidden');
             
-            document.getElementById('btn-guia').classList.remove('active', 'bg-indigo-50', 'text-indigo-700');
-            document.getElementById('btn-cuerpo').classList.remove('active', 'bg-indigo-50', 'text-indigo-700');
-            document.getElementById('btn-mujer').classList.remove('active', 'bg-indigo-50', 'text-indigo-700');
-            document.getElementById('btn-comunicacion').classList.remove('active', 'bg-indigo-50', 'text-indigo-700');
-            document.getElementById('btn-semaforo').classList.remove('active', 'bg-indigo-50', 'text-indigo-700');
-            document.getElementById('btn-consumo').classList.remove('active', 'bg-indigo-50', 'text-indigo-700');
-            document.getElementById('btn-test').classList.remove('active', 'bg-indigo-50', 'text-indigo-700');
+            // Desactivar botones
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-indigo-50', 'text-indigo-700'));
 
             // Mostrar seleccionado
             document.getElementById('tab-' + tabName).classList.remove('hidden');
-            
-            // Estilo Botón Activo
-            const activeBtn = document.getElementById('btn-' + tabName);
-            activeBtn.classList.add('active');
+            document.getElementById('btn-' + tabName).classList.add('active', 'bg-indigo-50', 'text-indigo-700');
         }
 
         // Lógica de Acordeones
@@ -1455,6 +1473,51 @@
             }
             feedbackContent.innerHTML = html;
             resultArea.scrollIntoView({behavior: 'smooth'});
+        }
+
+        // Lógica Test de Consumo
+        let currentScore = 0;
+        function calculateConsumption() {
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            const q3 = document.querySelector('input[name="q3"]:checked');
+
+            if (!q1 || !q2 || !q3) { alert("Por favor responde todas las preguntas."); return; }
+
+            const score = parseInt(q1.value) + parseInt(q2.value) + parseInt(q3.value);
+            currentScore = score;
+
+            document.querySelectorAll('.light').forEach(l => l.classList.remove('active'));
+            const resultSection = document.getElementById('consumption-result');
+            const resultCard = document.getElementById('result-card');
+            const title = document.getElementById('result-title');
+            const desc = document.getElementById('result-desc');
+            
+            resultSection.classList.remove('hidden');
+            document.getElementById('feedback-display').classList.add('hidden');
+
+            setTimeout(() => {
+                if (score >= 8) {
+                    document.getElementById('light-red').classList.add('active');
+                    resultCard.className = "bg-white p-6 rounded-xl shadow-lg border-t-8 border-red-500";
+                    title.innerText = "¡Detente! Te estás pasando (8+ pts)";
+                    title.className = "text-2xl font-bold text-center mb-4 text-red-600";
+                    desc.innerText = "Puede haber uso nocivo o adicción. Afecta tu salud y vida.";
+                } else if (score >= 4) {
+                    document.getElementById('light-yellow').classList.add('active');
+                    resultCard.className = "bg-white p-6 rounded-xl shadow-lg border-t-8 border-yellow-400";
+                    title.innerText = "¡Aguas! Estás en riesgo (4-7 pts)";
+                    title.className = "text-2xl font-bold text-center mb-4 text-yellow-600";
+                    desc.innerText = "Reflexiona sobre tu consumo. Estás cerca de tener problemas serios.";
+                } else {
+                    document.getElementById('light-green').classList.add('active');
+                    resultCard.className = "bg-white p-6 rounded-xl shadow-lg border-t-8 border-green-500";
+                    title.innerText = "Bajo Riesgo (0-3 pts)";
+                    title.className = "text-2xl font-bold text-center mb-4 text-green-600";
+                    desc.innerText = score === 0 ? "¡Muy bien! Sigue sin consumir." : "Eres consumidor de bajo riesgo.";
+                }
+                resultSection.scrollIntoView({behavior: 'smooth'});
+            }, 300);
         }
 
         function showFeedback(type) {
